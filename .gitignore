@@ -1,0 +1,7 @@
+venv/
+.venv/
+__pycache__/
+instance/
+data/combined.csv
+*.DS_Store
+.env

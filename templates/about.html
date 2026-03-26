@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}About — AI News Verifier{% endblock %}
+
+{% block head %}
+<style>
+    .about-shell {
+        min-height: calc(100vh - 64px);
+        padding: 60px 24px;
+        background:
+            radial-gradient(ellipse at 10% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
+            radial-gradient(ellipse at 90% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 50%);
+    }
+
+    .about-inner {
+        max-width: 800px;
+        margin: 0 auto;
+        background: rgba(17, 24, 39, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        /* glassmorphism */
+        border-radius: 24px;
+        padding: 48px;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+    }
+
+    .about-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 24px;
+        background: linear-gradient(135deg, #34d399, #2dd4bf);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+    }
+
+    .about-content {
+        font-size: 1.05rem;
+        line-height: 1.8;
+        color: #cbd5e1;
+    }
+
+    .about-content h3 {
+        color: #f8fafc;
+        margin-top: 32px;
+        margin-bottom: 16px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-shell">
+    <div class="about-inner">
+        <h1 class="about-title">Our Mission</h1>
+        <div class="about-content">
+            <p>In an era defined by rapid information flow, distinguishing truth from fabrication has never been more
+                critical. AI NewsVerifier was built to serve as a high-speed triage tool, helping readers quickly assess
+                the linguistic patterns underlying modern journalism.</p>
+
+            <h3>How It Started</h3>
+            <p>What began as a research experiment into Natural Language Processing quickly evolved into a dedicated
+                platform. We recognized that while human fact-checkers do incredible work, the sheer volume of daily
+                news requires an automated "first line of defense." Our models learn the subtle structural and semantic
+                differences between sensationalist fabrications and standard reporting.</p>
+
+            <h3>Our Technology</h3>
+            <p>We leverage advanced machine learning models trained on vast datasets of verified news and known
+                falsehoods. The system looks for emotional charge, vocabulary complexity, and structural formatting to
+                generate a reliable confidence score in milliseconds.</p>
+
+            <div class="text-center mt-5">
+                <a href="/" class="btn btn-primary btn-lg"
+                    style="border-radius: 50px; background: linear-gradient(135deg, #10b981, #0ea5e9); border: none; font-weight: 600; padding: 12px 30px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);">Start
+                    Verifying News</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

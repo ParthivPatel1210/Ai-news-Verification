@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}API Documentation — AI News Verifier{% endblock %}
+
+{% block head %}
+<style>
+    .api-shell {
+        min-height: calc(100vh - 64px);
+        padding: 60px 24px;
+        background:
+            radial-gradient(ellipse at 50% 0%, rgba(14, 165, 233, 0.15) 0%, transparent 60%);
+    }
+
+    .api-inner {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .api-card {
+        background: rgba(17, 24, 39, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 40px;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        margin-bottom: 24px;
+    }
+
+    .api-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #f8fafc;
+        margin-bottom: 12px;
+    }
+
+    .api-subtitle {
+        color: #94a3b8;
+        margin-bottom: 32px;
+        font-size: 1.1rem;
+    }
+
+    .code-block {
+        background: #000;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        font-family: monospace;
+        color: #34d399;
+        overflow-x: auto;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="api-shell">
+    <div class="api-inner">
+        <div class="api-card">
+            <h1 class="api-title">API Documentation</h1>
+            <p class="api-subtitle">Integrate our advanced Fake News detection directly into your applications.</p>
+
+            <h4 class="text-light mb-3">Endpoint</h4>
+            <div class="code-block">POST /predict</div>
+
+            <h4 class="text-light mb-3">Request Body</h4>
+            <p class="text-muted">Send a JSON payload containing the text you want to classify.</p>
+            <div class="code-block">
+                {<br>
+                &nbsp;&nbsp;"text": "The full headline and article body to analyze..."<br>
+                }
+            </div>
+
+            <h4 class="text-light mb-3">Response</h4>
+            <p class="text-muted">The API will return a JSON object with the prediction result and the model's
+                confidence level.</p>
+            <div class="code-block">
+                {<br>
+                &nbsp;&nbsp;"prediction": "REAL" | "FAKE",<br>
+                &nbsp;&nbsp;"probability": 0.942<br>
+                }
+            </div>
+
+            <h4 class="text-light mt-5 mb-3">Usage Limits</h4>
+            <p class="text-muted">Our current public development endpoint is rate-limited to 100 requests per hour per
+                IP. For scaling and enterprise keys, please contact our support team.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

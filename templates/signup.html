@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up — AI News Verifier{% endblock %}
+
+{% block head %}
+<style>
+  .auth-shell {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 16px;
+    background:
+      radial-gradient(ellipse at 80% 50%, rgba(14, 165, 233, 0.15) 0%, transparent 55%),
+      radial-gradient(ellipse at 20% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 55%),
+      #0a0f1e;
+  }
+
+  .auth-card {
+    width: 100%;
+    max-width: 460px;
+    background: rgba(17, 24, 39, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 44px 40px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .auth-icon {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(16, 185, 129, 0.2));
+    border: 1px solid rgba(14, 165, 233, 0.3);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    color: #2dd4bf;
+  }
+
+  .auth-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 6px;
+    letter-spacing: -0.03em;
+  }
+
+  .auth-subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 32px;
+  }
+
+  .auth-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #94a3b8;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .auth-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #e2e8f0;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  .auth-input::placeholder {
+    color: #475569;
+  }
+
+  .auth-input:focus {
+    border-color: rgba(45, 212, 191, 0.5);
+    box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.1);
+  }
+
+  .auth-btn {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    margin-top: 8px;
+    letter-spacing: 0.01em;
+  }
+
+  .auth-btn:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+  }
+
+  .auth-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    margin: 24px 0;
+  }
+
+  .auth-footer-text {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+
+  .auth-footer-text a {
+    color: #2dd4bf;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .auth-footer-text a:hover {
+    text-decoration: underline;
+  }
+
+  .input-group-dark {
+    margin-bottom: 18px;
+  }
+
+  .trust-badges {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .trust-badge {
+    font-size: 0.75rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .trust-badge i {
+    color: #22c55e;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-icon"><i class="bi bi-person-plus-fill"></i></div>
+    <div class="auth-title">Create your account</div>
+    <div class="auth-subtitle">Start verifying news with AI in seconds.</div>
+
+    <div class="trust-badges">
+      <span class="trust-badge"><i class="bi bi-check-circle-fill"></i> Free forever</span>
+      <span class="trust-badge"><i class="bi bi-shield-fill-check"></i> Secure & private</span>
+      <span class="trust-badge"><i class="bi bi-clock-history"></i> Save history</span>
+    </div>
+
+    <form method="post" action="/signup" autocomplete="on">
+      <div class="input-group-dark">
+        <label class="auth-label" for="signup-username">Username</label>
+        <input id="signup-username" name="username" class="auth-input" placeholder="johndoe" required
+          autocomplete="username" />
+      </div>
+      <div class="input-group-dark">
+        <label class="auth-label" for="signup-email">Email address</label>
+        <input id="signup-email" name="email" type="email" class="auth-input" placeholder="you@example.com" required
+          autocomplete="email" />
+      </div>
+      <div class="input-group-dark">
+        <label class="auth-label" for="signup-password">Password</label>
+        <input id="signup-password" name="password" type="password" class="auth-input"
+          placeholder="Create a strong password" required autocomplete="new-password" />
+      </div>
+      <button type="submit" class="auth-btn">
+        <i class="bi bi-person-check me-1"></i> Create Account
+      </button>
+    </form>
+
+    <hr class="auth-divider" />
+    <div class="auth-footer-text">
+      Already have an account? <a href="/login">Sign in instead</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

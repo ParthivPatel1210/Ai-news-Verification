@@ -1,0 +1,549 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard — AI News Verifier{% endblock %}
+
+{% block head %}
+<style>
+  .dash-shell {
+    min-height: calc(100vh - 64px);
+    padding: 36px 24px 60px;
+    background:
+      radial-gradient(ellipse at 10% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+      #0a0f1e;
+  }
+
+  .dash-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .dash-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .dash-greeting {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    letter-spacing: -0.03em;
+  }
+
+  .dash-greeting span {
+    background: linear-gradient(90deg, #34d399, #2dd4bf);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dash-meta {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-top: 4px;
+  }
+
+  .dash-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .dash-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border-radius: 9px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+
+  .dash-btn:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+  }
+
+  .dash-btn-primary {
+    background: linear-gradient(135deg, #10b981, #0ea5e9);
+    color: #fff;
+  }
+
+  .dash-btn-ghost {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+  }
+
+  .dash-btn-ghost:hover {
+    color: #e2e8f0;
+  }
+
+  /* ── Stat Cards ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: rgba(17, 24, 39, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+    padding: 20px 22px;
+    backdrop-filter: blur(8px);
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 10px;
+  }
+
+  .stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-value.real {
+    color: #34d399;
+  }
+
+  .stat-value.fake {
+    color: #f87171;
+  }
+
+  .stat-sub {
+    font-size: 0.78rem;
+    color: #475569;
+  }
+
+  .stat-icon {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
+
+  /* ── History Table ── */
+  .history-card {
+    background: rgba(17, 24, 39, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+    overflow: hidden;
+  }
+
+  .history-head {
+    padding: 22px 28px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .history-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    flex: 1;
+  }
+
+  .history-count {
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.07);
+    color: #94a3b8;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+
+  .history-table-wrap {
+    overflow-x: auto;
+  }
+
+  table.dash-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .dash-table thead tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .dash-table th {
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #64748b;
+    white-space: nowrap;
+  }
+
+  .dash-table td {
+    padding: 13px 20px;
+    color: #cbd5e1;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .dash-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .dash-table tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .snippet-cell {
+    max-width: 340px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #94a3b8;
+    font-size: 0.82rem;
+  }
+
+  .badge-real {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    background: rgba(52, 211, 153, 0.12);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    color: #34d399;
+  }
+
+  .badge-fake {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    color: #f87171;
+  }
+
+  .conf-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 100px;
+  }
+
+  .conf-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .conf-fill-real {
+    height: 100%;
+    background: #34d399;
+    border-radius: 99px;
+  }
+
+  .conf-fill-fake {
+    height: 100%;
+    background: #f87171;
+    border-radius: 99px;
+  }
+
+  .conf-pct {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    white-space: nowrap;
+  }
+
+  .del-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    background: rgba(248, 113, 113, 0.06);
+    color: #f87171;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    text-decoration: none;
+  }
+
+  .del-btn:hover {
+    background: rgba(248, 113, 113, 0.15);
+    border-color: rgba(248, 113, 113, 0.4);
+  }
+
+  .empty-state {
+    padding: 64px 28px;
+    text-align: center;
+  }
+
+  .empty-icon {
+    font-size: 2.5rem;
+    color: #334155;
+    margin-bottom: 16px;
+  }
+
+  .empty-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #475569;
+    margin-bottom: 8px;
+  }
+
+  .empty-text {
+    font-size: 0.875rem;
+    color: #334155;
+  }
+
+  .empty-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 20px;
+    padding: 10px 22px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #10b981, #0ea5e9);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .empty-cta:hover {
+    opacity: 0.85;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+{% set total = history|length %}
+{% set real_count = history|selectattr('prediction','equalto','REAL')|list|length %}
+{% set fake_count = total - real_count %}
+
+<div class="dash-shell">
+  <div class="dash-inner">
+
+    <!-- Header -->
+    <div class="dash-header">
+      <div>
+        <div class="dash-greeting">Hi, <span>{{ current_user.username }}</span> 👋</div>
+        <div class="dash-meta"><i class="bi bi-envelope me-1"></i>{{ current_user.email }}</div>
+      </div>
+      <div class="dash-actions">
+        <a href="/" class="dash-btn dash-btn-primary"><i class="bi bi-search-heart"></i> Verify Article</a>
+        <a href="/logout" class="dash-btn dash-btn-ghost"><i class="bi bi-box-arrow-right"></i> Logout</a>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon" style="color:#34d399"><i class="bi bi-file-text"></i></div>
+        <div class="stat-label">Total Checks</div>
+        <div class="stat-value">{{ total }}</div>
+        <div class="stat-sub">articles analysed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="color:#34d399"><i class="bi bi-check-circle"></i></div>
+        <div class="stat-label">Real</div>
+        <div class="stat-value real">{{ real_count }}</div>
+        <div class="stat-sub">{% if total > 0 %}{{ '%.0f'|format(real_count/total*100) }}% of checks{% else %}—{% endif
+          %}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="color:#f87171"><i class="bi bi-x-circle"></i></div>
+        <div class="stat-label">Fake</div>
+        <div class="stat-value fake">{{ fake_count }}</div>
+        <div class="stat-sub">{% if total > 0 %}{{ '%.0f'|format(fake_count/total*100) }}% of checks{% else %}—{% endif
+          %}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="color:#2dd4bf"><i class="bi bi-bar-chart"></i></div>
+        <div class="stat-label">Avg Confidence</div>
+        <div class="stat-value" style="font-size:1.6rem;">
+          {% if total > 0 %}
+          {{ '%.0f'|format((history|sum(attribute='probability'))/total*100) }}%
+          {% else %}—{% endif %}
+        </div>
+        <div class="stat-sub">across all checks</div>
+      </div>
+    </div>
+
+    <!-- History Table -->
+    <div class="history-card">
+      <div class="history-head">
+        <div class="history-title"><i class="bi bi-clock-history me-2"></i>Verification History</div>
+        {% if total > 0 %}
+        <span class="history-count">{{ total }} entries</span>
+        {% endif %}
+      </div>
+
+      {% if total > 0 %}
+      <div class="history-table-wrap">
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th>Date & Time</th>
+              <th>Result</th>
+              <th>Confidence</th>
+              <th>Article Snippet</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in history %}
+            <tr>
+              <td style="white-space:nowrap; color:#64748b; font-size:0.8rem;">
+                <i class="bi bi-clock me-1"></i>
+                {{ item.timestamp.strftime('%b %d, %Y') }}<br>
+                <span style="color:#475569">{{ item.timestamp.strftime('%H:%M UTC') }}</span>
+              </td>
+              <td>
+                {% if item.prediction == 'REAL' %}
+                <span class="badge-real"><i class="bi bi-check-circle-fill"></i> REAL</span>
+                {% else %}
+                <span class="badge-fake"><i class="bi bi-exclamation-triangle-fill"></i> FAKE</span>
+                {% endif %}
+              </td>
+              <td>
+                {% set pct = (item.probability*100)|round|int %}
+                <div class="conf-bar-wrap">
+                  <div class="conf-bar">
+                    {% if item.prediction == 'REAL' %}
+                    <div class="conf-fill-real" style="width:{{ pct }}%"></div>
+                    {% else %}
+                    <div class="conf-fill-fake" style="width:{{ pct }}%"></div>
+                    {% endif %}
+                  </div>
+                  <span class="conf-pct">{{ pct }}%</span>
+                </div>
+              </td>
+              <td class="snippet-cell">
+                {% if item.url %}
+                <div class="mb-1"><a href="{{ item.url }}" target="_blank"
+                    style="color:#2dd4bf; text-decoration:none; font-weight:600;"><i class="bi bi-globe"></i> Source
+                    Link</a></div>
+                {% endif %}
+                <div class="mb-2" style="font-size:0.95rem; color:#f8fafc;">{{ item.text[:250] }}{{ '...' if
+                  item.text|length > 250 else '' }}</div>
+
+                <div class="d-flex flex-wrap gap-2 mb-2">
+                  {% if item.source_credibility %}
+                  <span class="badge"
+                    style="background:rgba(255,255,255,0.1); color:#34d399; font-weight:600; border:1px solid rgba(16,185,129,0.3);"><i
+                      class="bi bi-shield-check"></i> Reliability: {{ item.source_credibility }}/10</span>
+                  {% endif %}
+                  {% if item.suspicious_words %}
+                  <span class="badge"
+                    style="background:rgba(239,68,68,0.1); color:#fca5a5; font-weight:600; border:1px solid rgba(239,68,68,0.3);"><i
+                      class="bi bi-exclamation-triangle"></i> Triggers: {{ item.suspicious_words }}</span>
+                  {% endif %}
+                </div>
+
+                {% if item.explanation %}
+                <div class="mt-2 text-muted small"
+                  style="border-left:2px solid #10b981; padding-left:10px; background:rgba(0,0,0,0.2); padding:10px; border-radius:6px;">
+                  <strong style="color:#e2e8f0;"><i class="bi bi-robot"></i> AI Reasoning:</strong><br>
+                  {{ item.explanation }}
+                </div>
+                {% endif %}
+
+                <!-- Community Voting -->
+                <div class="mt-3 d-flex gap-3 align-items-center">
+                  <button class="btn btn-sm btn-outline-success vote-btn" data-id="{{ item.id }}" data-action="upvote"
+                    style="border-radius:50px; font-weight:600;">
+                    <i class="bi bi-arrow-up-circle"></i> <span class="upvote-count">{{ item.upvotes }}</span>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger vote-btn" data-id="{{ item.id }}" data-action="downvote"
+                    style="border-radius:50px; font-weight:600;">
+                    <i class="bi bi-arrow-down-circle"></i> <span class="downvote-count">{{ item.downvotes }}</span>
+                  </button>
+                </div>
+              </td>
+              <td>
+                <form method="post" action="/prediction/delete/{{ item.id }}"
+                  onsubmit="return confirm('Delete this entry?');">
+                  <button class="del-btn" type="submit">
+                    <i class="bi bi-trash3"></i> Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <div class="empty-icon"><i class="bi bi-newspaper"></i></div>
+        <div class="empty-title">No verifications yet</div>
+        <div class="empty-text">Paste a news article on the home page to verify it — results will appear here.</div>
+        <a href="/" class="empty-cta"><i class="bi bi-search-heart"></i> Start Verifying</a>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.querySelectorAll('.vote-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const pid = btn.getAttribute('data-id');
+      const action = btn.getAttribute('data-action');
+      try {
+        const res = await fetch(`/vote/${pid}/${action}`, { method: 'POST' });
+        const data = await res.json();
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+        const container = btn.closest('div');
+        container.querySelector('.upvote-count').textContent = data.upvotes;
+        container.querySelector('.downvote-count').textContent = data.downvotes;
+      } catch (err) {
+        console.error('Voting failed', err);
+      }
+    });
+  });
+</script>
+{% endblock %}
