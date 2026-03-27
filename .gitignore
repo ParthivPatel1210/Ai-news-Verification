@@ -3,5 +3,6 @@ venv/
 __pycache__/
 instance/
 data/combined.csv
+data/users.db
 *.DS_Store
 .env
