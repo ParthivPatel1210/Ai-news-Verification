@@ -251,6 +251,45 @@ def predict():
     # Live Web Search
     web_results = search_web_verification(text)
     
+    # Hybrid ML & Web Verification Ensemble for Short Text
+    if len(text) < 400 and web_results:
+        avg_credibility = 0
+        valid_sources = 0
+        for res in web_results:
+            score, _ = get_credibility_score(res['href'])
+            if score >= 5.0:
+                avg_credibility += score
+                valid_sources += 1
+                
+        if valid_sources > 0:
+            avg_cred = avg_credibility / valid_sources
+            if avg_cred >= 7.0:
+                # Highly credible sources found -> Boost REAL prob
+                prob_real = 1.0 - prob if is_fake else prob
+                prob_fake = prob if is_fake else 1.0 - prob
+                prob_real = min(0.99, prob_real + 0.40)
+                prob_fake = 1.0 - prob_real
+                if prob_real > prob_fake:
+                    label = "REAL"
+                    prob = prob_real
+                    is_fake = False
+                    explanation += " NOTE: Because this text is surprisingly short, the AI cross-referenced live web sources. Several trusted publishers were found actively reporting this claim, successfully overriding initial ML skepticism to REAL."
+                else:
+                    prob = prob_fake
+        else:
+            # 0 credible sources found -> Boost FAKE prob
+            prob_fake = prob if is_fake else 1.0 - prob
+            prob_real = 1.0 - prob_fake
+            prob_fake = min(0.99, prob_fake + 0.30)
+            prob_real = 1.0 - prob_fake
+            if prob_fake > prob_real:
+                label = "FAKE"
+                prob = prob_fake
+                is_fake = True
+                explanation += " NOTE: Because this text is extremely short, the AI cross-referenced live web sources. The complete lack of reputable reporting significantly boosted the FAKE probability."
+            else:
+                prob = prob_real
+    
     # If using pure text input without URL, attempts to guess the source from the DDGS top search result!
     if not url and web_results and not source_domain:
         guessed_url = web_results[0].get('href', '')
