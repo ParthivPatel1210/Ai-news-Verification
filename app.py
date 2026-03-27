@@ -251,8 +251,8 @@ def predict():
     # Live Web Search
     web_results = search_web_verification(text)
     
-    # Hybrid ML & Web Verification Ensemble for Short Text
-    if len(text) < 400 and web_results:
+    # Hybrid ML & Web Verification Ensemble for ALL inputs
+    if web_results:
         avg_credibility = 0
         valid_sources = 0
         for res in web_results:
@@ -273,7 +273,7 @@ def predict():
                     label = "REAL"
                     prob = prob_real
                     is_fake = False
-                    explanation += " NOTE: Because this text is surprisingly short, the AI cross-referenced live web sources. Several trusted publishers were found actively reporting this claim, successfully overriding initial ML skepticism to REAL."
+                    explanation += " NOTE: The AI cross-referenced live web sources. Several highly trusted publishers were found actively reporting this claim, verifying its authenticity and overriding initial ML skepticism."
                 else:
                     prob = prob_fake
         else:
@@ -286,7 +286,7 @@ def predict():
                 label = "FAKE"
                 prob = prob_fake
                 is_fake = True
-                explanation += " NOTE: Because this text is extremely short, the AI cross-referenced live web sources. The complete lack of reputable reporting significantly boosted the FAKE probability."
+                explanation += " NOTE: The AI cross-referenced live web sources for this claim. The complete lack of reputable reporting significantly boosted the FAKE probability."
             else:
                 prob = prob_real
     
