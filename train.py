@@ -21,7 +21,8 @@ def main():
         return
 
     from sklearn.model_selection import train_test_split
-    vectorizer = TfidfVectorizer(max_features=30000, stop_words='english', ngram_range=(1, 2))
+    # Drastically reduced feature space to prevent 512MB RAM Out-Of-Memory limit on Render Free Tier
+    vectorizer = TfidfVectorizer(max_features=10000, stop_words='english', ngram_range=(1, 1))
     print('Fitting vectorizer...')
     X = vectorizer.fit_transform(df['text'].astype(str))
     le = LabelEncoder()
