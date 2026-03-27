@@ -371,6 +371,51 @@
       </div>
     </div>
 
+    <!-- Profile Settings -->
+    <div class="history-card" style="margin-bottom: 32px;">
+      <div class="history-head"
+        style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; margin-bottom: 20px;">
+        <div class="history-title"><i class="bi bi-person-badge me-2" style="color:#2dd4bf;"></i>Public Profile Settings
+        </div>
+      </div>
+      <form method="POST" action="/dashboard" class="row g-3">
+        <div class="col-md-2 text-center d-flex flex-column align-items-center justify-content-center">
+          <img src="{{ current_user.profile_picture }}" alt="Avatar" class="rounded-circle shadow"
+            style="width: 80px; height: 80px; object-fit: cover; border: 2px solid #10b981; background: #fff;">
+          <div class="small text-muted mt-2">Member since<br>{{ current_user.joined_date.strftime('%b %Y') }}</div>
+        </div>
+        <div class="col-md-10">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label text-muted small text-uppercase fw-bold" style="letter-spacing: 0.04em;">Avatar
+                URL</label>
+              <input type="url" name="profile_picture" class="form-control"
+                style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px;"
+                value="{{ current_user.profile_picture }}">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small text-uppercase fw-bold"
+                style="letter-spacing: 0.04em;">Location</label>
+              <input type="text" name="location" class="form-control"
+                style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px;"
+                value="{{ current_user.location or '' }}" placeholder="City, Country">
+            </div>
+            <div class="col-12">
+              <label class="form-label text-muted small text-uppercase fw-bold"
+                style="letter-spacing: 0.04em;">Bio</label>
+              <textarea name="bio" class="form-control" rows="2"
+                style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px;"
+                placeholder="Tell the global community about yourself...">{{ current_user.bio or '' }}</textarea>
+            </div>
+            <div class="col-12 text-end">
+              <button type="submit" class="dash-btn dash-btn-primary" style="padding: 10px 24px; border: none;"><i
+                  class="bi bi-save me-1"></i> Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
     <!-- Stats -->
     <div class="stats-row">
       <div class="stat-card">

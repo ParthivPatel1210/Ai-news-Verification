@@ -389,16 +389,9 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-    history = Prediction.query.filter_by(user_id=int(current_user.get_id())).order_by(Prediction.timestamp.desc()).limit(200).all()
-    return render_template('dashboard.html', history=history)
-
-
-@app.route('/profile', methods=['GET', 'POST'])
-@login_required
-def profile():
     if request.method == 'POST':
         bio = request.form.get('bio')
         location = request.form.get('location')
@@ -411,9 +404,10 @@ def profile():
             
         db.session.commit()
         flash('Profile settings updated successfully!', 'success')
-        return redirect(url_for('profile'))
+        return redirect(url_for('dashboard'))
         
-    return render_template('profile.html', user=current_user)
+    history = Prediction.query.filter_by(user_id=int(current_user.get_id())).order_by(Prediction.timestamp.desc()).limit(200).all()
+    return render_template('dashboard.html', history=history)
 
 
 @app.route('/community')

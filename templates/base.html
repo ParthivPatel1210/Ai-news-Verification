@@ -152,10 +152,6 @@
       </li>
       {% if current_user.is_authenticated %}
       <li>
-        <a class="tn-link {{ 'active' if request.path == '/profile' else '' }}" href="/profile"><i
-            class="bi bi-person-lines-fill me-1 text-teal"></i>Profile</a>
-      </li>
-      <li>
         <a class="tn-link {{ 'active' if request.path == '/dashboard' else '' }}" href="/dashboard"
           style="display:flex;align-items:center;">
           <span class="user-avatar">{{ current_user.username[0]|upper }}</span>
