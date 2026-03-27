@@ -19,7 +19,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'change-this-secret-in-production'
 import os
 ROOT = os.path.dirname(os.path.abspath(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(ROOT, 'data', 'users.db')}"
+data_dir = os.path.join(ROOT, 'data')
+os.makedirs(data_dir, exist_ok=True)
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(data_dir, 'users.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # init database and login manager
