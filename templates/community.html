@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}Community Feed — AI News Verifier{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bold" style="font-family: 'Outfit', sans-serif; color: #f1f5f9;">
+                <i class="bi bi-globe-americas me-2 text-primary"></i> Global Community Feed
+            </h2>
+            <p class="text-muted mb-0">See what news other users are verifying globally in real-time.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for post in posts %}
+        <div class="col-12">
+            <div class="card bg-dark border-0 shadow"
+                style="border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.05) !important;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ post.user.profile_picture }}" alt="User Avatar" class="rounded-circle me-3"
+                                style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #3b82f6;">
+                            <div>
+                                <h6 class="mb-0 fw-bold text-light">{{ post.user.username }}</h6>
+                                <small class="text-muted"><i class="bi bi-geo-alt-fill text-secondary"></i> {{
+                                    post.user.location or 'Global Sentinel' }}</small>
+                            </div>
+                        </div>
+                        <span class="badge"
+                            style="background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);">
+                            {{ post.timestamp.strftime('%b %d, %H:%M') }}
+                        </span>
+                    </div>
+
+                    <div class="p-3 mb-3 rounded"
+                        style="background: rgba(0,0,0,0.2); border-left: 3px solid #3b82f6; color: #e2e8f0; font-style: italic;">
+                        "{{ post.text[:400] }}{% if post.text|length > 400 %}...{% endif %}"
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        {% if post.prediction.strip().upper() == 'REAL' %}
+                        <span class="badge"
+                            style="background: rgba(16, 185, 129, 0.15); color: #34d399; font-size: 0.9rem; padding: 8px 12px;"><i
+                                class="bi bi-check-circle-fill"></i> AI Verified: REAL ({{
+                            "%.1f"|format(post.probability * 100) }}%)</span>
+                        {% else %}
+                        <span class="badge"
+                            style="background: rgba(239, 68, 68, 0.15); color: #f87171; font-size: 0.9rem; padding: 8px 12px;"><i
+                                class="bi bi-exclamation-triangle-fill"></i> AI Flagged: FAKE ({{
+                            "%.1f"|format((1-post.probability) * 100) }}%)</span>
+                        {% endif %}
+
+                        {% if post.source_credibility %}
+                        <span class="badge"
+                            style="background:rgba(255,255,255,0.1); color:#60a5fa; font-size: 0.9rem; border:1px solid rgba(96,165,250,0.3); padding: 8px 12px;"><i
+                                class="bi bi-shield-check"></i> Source Trust: {{ post.source_credibility }}/10</span>
+                        {% endif %}
+                    </div>
+
+                    {% if post.explanation %}
+                    <div class="p-3 mb-3 rounded"
+                        style="background: rgba(255,255,255,0.03); color: #cbd5e1; font-size: 0.9rem;">
+                        <strong><i class="bi bi-robot text-teal"></i> AI Reasoning:</strong> {{ post.explanation }}
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex align-items-center justify-content-end gap-3"
+                        style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px;">
+                        <button class="btn btn-sm btn-outline-success d-flex align-items-center"
+                            onclick="voteCommunity({{ post.id }}, 'upvote')" id="upvote-btn-{{ post.id }}">
+                            <i class="bi bi-hand-thumbs-up me-2"></i> <span id="upvotes-count-{{ post.id }}">{{
+                                post.upvotes or 0 }}</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger d-flex align-items-center"
+                            onclick="voteCommunity({{ post.id }}, 'downvote')" id="downvote-btn-{{ post.id }}">
+                            <i class="bi bi-hand-thumbs-down me-2"></i> <span id="downvotes-count-{{ post.id }}">{{
+                                post.downvotes or 0 }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <div class="mb-4" style="font-size: 4rem; color: #334155;"><i class="bi bi-globe-x"></i></div>
+            <h4 class="text-muted">The community feed is empty right now.</h4>
+            <p style="color: #64748b;">Be the first to perform a verification and publish it for the world to see!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function voteCommunity(pid, action) {
+        fetch(`/vote/${pid}/${action}`, {
+            method: 'POST'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById(`upvotes-count-${pid}`).innerText = data.upvotes || 0;
+                    document.getElementById(`downvotes-count-${pid}`).innerText = data.downvotes || 0;
+                }
+            })
+            .catch(err => console.error(err));
+    }
+</script>
+{% endblock %}

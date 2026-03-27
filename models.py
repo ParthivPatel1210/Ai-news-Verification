@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -10,6 +11,12 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(200), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
+    
+    # Profile Extensions
+    bio = db.Column(db.Text, nullable=True)
+    profile_picture = db.Column(db.String(255), default='https://ui-avatars.com/api/?name=User&background=10b981&color=fff')
+    location = db.Column(db.String(100), nullable=True)
+    joined_date = db.Column(db.DateTime, default=datetime.utcnow)
 
     def get_id(self):
         return str(self.id)
@@ -31,5 +38,8 @@ class Prediction(db.Model):
     downvotes = db.Column(db.Integer, default=0)
     explanation = db.Column(db.Text, nullable=True)
     suspicious_words = db.Column(db.Text, nullable=True) # comma separated list
+    
+    # Community Feature
+    is_public = db.Column(db.Boolean, default=False)
 
     user = db.relationship('User', backref=db.backref('predictions', lazy='dynamic'))

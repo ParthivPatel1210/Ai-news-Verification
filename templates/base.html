@@ -146,9 +146,18 @@
         <a class="tn-link {{ 'active' if request.path == '/analytics' else '' }}" href="/analytics"><i
             class="bi bi-bar-chart-fill me-1 text-teal"></i>Analytics</a>
       </li>
+      <li>
+        <a class="tn-link {{ 'active' if request.path == '/community' else '' }}" href="/community"><i
+            class="bi bi-globe-americas me-1 text-primary"></i>Community</a>
+      </li>
       {% if current_user.is_authenticated %}
       <li>
-        <a class="tn-link" href="/dashboard" style="display:flex;align-items:center;">
+        <a class="tn-link {{ 'active' if request.path == '/profile' else '' }}" href="/profile"><i
+            class="bi bi-person-lines-fill me-1 text-teal"></i>Profile</a>
+      </li>
+      <li>
+        <a class="tn-link {{ 'active' if request.path == '/dashboard' else '' }}" href="/dashboard"
+          style="display:flex;align-items:center;">
           <span class="user-avatar">{{ current_user.username[0]|upper }}</span>
           {{ current_user.username }}
         </a>

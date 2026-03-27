@@ -496,10 +496,24 @@
                   </button>
                 </div>
               </td>
-              <td>
+              <td
+                style="display: flex; flex-direction: column; gap: 8px; justify-content: center; height: 100%; border: none;">
+                {% if not item.is_public %}
+                <form method="post" action="/publish/{{ item.id }}">
+                  <button class="btn btn-sm" type="submit"
+                    style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); width: 100%; border-radius: 8px; font-weight: 600; padding: 6px 0;">
+                    <i class="bi bi-globe-americas"></i> Publish
+                  </button>
+                </form>
+                {% else %}
+                <button class="btn btn-sm" disabled
+                  style="background: rgba(255, 255, 255, 0.05); color: #64748b; border: 1px solid rgba(255, 255, 255, 0.1); width: 100%; border-radius: 8px; font-weight: 600; padding: 6px 0;">
+                  <i class="bi bi-check-circle"></i> Public
+                </button>
+                {% endif %}
                 <form method="post" action="/prediction/delete/{{ item.id }}"
                   onsubmit="return confirm('Delete this entry?');">
-                  <button class="del-btn" type="submit">
+                  <button class="del-btn" type="submit" style="width: 100%; border-radius: 8px;">
                     <i class="bi bi-trash3"></i> Delete
                   </button>
                 </form>

@@ -340,11 +340,22 @@ def signup():
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
-        if not username or not email or not password:
+        confirm_password = request.form.get('confirm_password')
+        
+        if not username or not email or not password or not confirm_password:
             flash('Fill all fields', 'danger')
             return redirect(url_for('signup'))
-        if User.query.filter((User.username == username) | (User.email == email)).first():
-            flash('User with that username or email already exists', 'danger')
+            
+        if password != confirm_password:
+            flash('Passwords do not match.', 'danger')
+            return redirect(url_for('signup'))
+            
+        if User.query.filter_by(username=username).first():
+            flash('Username is already taken.', 'danger')
+            return redirect(url_for('signup'))
+            
+        if User.query.filter_by(email=email).first():
+            flash('Email is already registered. Please login.', 'danger')
             return redirect(url_for('signup'))
 
         user = User(username=username, email=email, password_hash=generate_password_hash(password))
@@ -381,6 +392,46 @@ def logout():
 def dashboard():
     history = Prediction.query.filter_by(user_id=int(current_user.get_id())).order_by(Prediction.timestamp.desc()).limit(200).all()
     return render_template('dashboard.html', history=history)
+
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    if request.method == 'POST':
+        bio = request.form.get('bio')
+        location = request.form.get('location')
+        profile_picture = request.form.get('profile_picture')
+        
+        current_user.bio = bio
+        current_user.location = location
+        if profile_picture:
+            current_user.profile_picture = profile_picture
+            
+        db.session.commit()
+        flash('Profile settings updated successfully!', 'success')
+        return redirect(url_for('profile'))
+        
+    return render_template('profile.html', user=current_user)
+
+
+@app.route('/community')
+def community():
+    public_posts = Prediction.query.filter_by(is_public=True).order_by(Prediction.timestamp.desc()).limit(100).all()
+    return render_template('community.html', posts=public_posts)
+
+
+@app.route('/publish/<int:pid>', methods=['POST'])
+@login_required
+def publish_prediction(pid):
+    p = Prediction.query.get(pid)
+    if not p or p.user_id != int(current_user.get_id()):
+        flash('Not authorized or item not found.', 'danger')
+        return redirect(url_for('dashboard'))
+        
+    p.is_public = True
+    db.session.commit()
+    flash('Successfully published your verification to the global Community Feed!', 'success')
+    return redirect(url_for('dashboard'))
 
 
 @app.route('/prediction/delete/<int:pid>', methods=['POST'])
