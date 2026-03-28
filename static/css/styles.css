@@ -2,18 +2,18 @@
 :root, [data-theme="light"] {
   --brand: #0b7fab;
   --muted: #64748b;
-  --bg-main: #f8fafc;
-  --bg-card: rgba(255, 255, 255, 1);
-  --bg-card-hover: rgba(0, 0, 0, 0.03);
+  --bg-main: #eff6ff;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-card-hover: rgba(59, 130, 246, 0.05);
   --bg-input: #ffffff;
   --text-primary: #0f172a;
   --text-muted: #64748b;
-  --border-light: rgba(0,0,0,0.1);
+  --border-light: rgba(59, 130, 246, 0.15);
   --glass-bg: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(0, 0, 0, 0.1);
-  --hero-bg: #f1f5f9;
+  --glass-border: rgba(59, 130, 246, 0.15);
+  --hero-bg: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
   --history-card: #ffffff;
-  --history-head-border: rgba(0,0,0,0.1);
+  --history-head-border: rgba(59, 130, 246, 0.1);
 }
 
 [data-theme="dark"] {
@@ -121,7 +121,7 @@ textarea.form-control {
 .hero-shell {
   position: relative;
   min-height: 80vh;
-  background-color: #0f172a;
+  background: var(--hero-bg);
   overflow: hidden;
   border-radius: 24px;
   margin: 20px;
@@ -152,7 +152,7 @@ textarea.form-control {
   border: 1px solid var(--glass-border);
   border-radius: 20px;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  color: #f9fafb;
+  color: var(--text-primary);
 }
 
 /* Floating Elements and Animations */

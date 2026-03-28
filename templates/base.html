@@ -34,7 +34,7 @@
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: rgba(10, 15, 30, 0.85);
+      background: var(--glass-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-light);
@@ -53,8 +53,8 @@
     }
 
     .topbar-brand img {
-      height: 32px;
-      width: 32px;
+      height: 48px;
+      width: 48px;
     }
 
     .topbar-brand-name {
@@ -134,7 +134,7 @@
 <body>
   <nav class="topbar">
     <a class="topbar-brand" href="/">
-      <img src="/static/img/logo.png" alt="logo" style="border-radius: 8px;" />
+      <img src="/static/img/logo_transparent.png" alt="logo" />
       <span class="topbar-brand-name">AI NewsVerifier</span>
     </a>
     <ul class="topbar-nav">

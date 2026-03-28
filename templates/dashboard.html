@@ -445,7 +445,7 @@
               </div>
               <div class="col-12">
                 <label class="form-label theme-muted small text-uppercase fw-bold" style="letter-spacing: 0.04em;">Bio</label>
-                <textarea name="bio" class="form-control theme-input" rows="1" placeholder="Tell the global community about yourself..." style="border-radius: 8px;">{{ current_user.bio or '' }}</textarea>
+                <textarea name="bio" class="form-control theme-input" placeholder="Tell the global community about yourself..." style="border-radius: 8px; min-height: 80px; height: 80px; resize: vertical;">{{ current_user.bio or '' }}</textarea>
               </div>
               <div class="col-12 text-end">
                 <button type="submit" class="dash-btn dash-btn-primary" style="padding: 10px 24px; border: none;"><i class="bi bi-save me-1"></i> Save Changes</button>
