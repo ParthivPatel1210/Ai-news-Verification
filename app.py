@@ -21,7 +21,14 @@ import os
 ROOT = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(ROOT, 'data')
 os.makedirs(data_dir, exist_ok=True)
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(data_dir, 'users.db')}"
+
+# Securely bind to Cloud PostgreSQL if provided (Render), otherwise fallback to local SQLite
+db_url = os.environ.get('DATABASE_URL')
+# SQLAlchemy 1.4+ requires 'postgresql://' instead of 'postgres://'
+if db_url and db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url or f"sqlite:///{os.path.join(data_dir, 'users.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # init database and login manager
