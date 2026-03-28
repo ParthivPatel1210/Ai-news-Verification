@@ -71,10 +71,32 @@ with app.app_context():
     try:
         db.session.execute(text("ALTER TABLE users ADD COLUMN theme_preference VARCHAR(10) DEFAULT 'dark';"))
         db.session.commit()
-        print("Schema Migration: Column theme_preference successfully securely appended to persistent users table.")
     except Exception:
         db.session.rollback()
-        print("Schema Migration: Column exists or SQLite syntax mismatch (safe to ignore).")
+        
+    try:
+        db.session.execute(text("ALTER TABLE users ADD COLUMN city VARCHAR(100);"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        
+    try:
+        db.session.execute(text("ALTER TABLE users ADD COLUMN country VARCHAR(100);"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        
+    try:
+        db.session.execute(text("ALTER TABLE users ADD COLUMN birthdate DATE;"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        
+    try:
+        db.session.execute(text("ALTER TABLE users ADD COLUMN gender VARCHAR(20);"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
         
     load_artifacts()
 
@@ -413,11 +435,23 @@ def logout():
 def dashboard():
     if request.method == 'POST':
         bio = request.form.get('bio')
-        location = request.form.get('location')
+        city = request.form.get('city')
+        country = request.form.get('country')
+        gender = request.form.get('gender')
+        birthdate_str = request.form.get('birthdate')
         profile_picture = request.form.get('profile_picture')
         
         current_user.bio = bio
-        current_user.location = location
+        current_user.city = city
+        current_user.country = country
+        current_user.gender = gender
+        
+        if birthdate_str:
+            try:
+                current_user.birthdate = datetime.strptime(birthdate_str, '%Y-%m-%d').date()
+            except ValueError:
+                pass
+                
         if profile_picture:
             current_user.profile_picture = profile_picture
             
@@ -517,11 +551,34 @@ def vote_prediction(pid, action):
     if not p:
         return jsonify({'error': 'Prediction not found'}), 404
         
+    user_vote = Vote.query.filter_by(user_id=int(current_user.get_id()), prediction_id=pid).first()
+    
     if action == 'upvote':
-        p.upvotes = (p.upvotes or 0) + 1
+        if user_vote:
+            if user_vote.vote_type == 1:
+                return jsonify({'upvotes': p.upvotes, 'downvotes': p.downvotes}) # already upvoted
+            else:
+                user_vote.vote_type = 1
+                p.upvotes = (p.upvotes or 0) + 1
+                p.downvotes = max(0, (p.downvotes or 0) - 1)
+        else:
+            new_vote = Vote(user_id=int(current_user.get_id()), prediction_id=pid, vote_type=1)
+            db.session.add(new_vote)
+            p.upvotes = (p.upvotes or 0) + 1
+            
     elif action == 'downvote':
-        p.downvotes = (p.downvotes or 0) + 1
-        
+        if user_vote:
+            if user_vote.vote_type == -1:
+                return jsonify({'upvotes': p.upvotes, 'downvotes': p.downvotes}) # already downvoted
+            else:
+                user_vote.vote_type = -1
+                p.downvotes = (p.downvotes or 0) + 1
+                p.upvotes = max(0, (p.upvotes or 0) - 1)
+        else:
+            new_vote = Vote(user_id=int(current_user.get_id()), prediction_id=pid, vote_type=-1)
+            db.session.add(new_vote)
+            p.downvotes = (p.downvotes or 0) + 1
+            
     db.session.commit()
     return jsonify({'upvotes': p.upvotes, 'downvotes': p.downvotes})
 

@@ -139,9 +139,7 @@
     </a>
     <ul class="topbar-nav">
       <li><a class="tn-link" href="/">Home</a></li>
-      <li>
-        <a class="tn-link {{ 'active' if request.path == '/api' else '' }}" href="/api">API</a>
-      </li>
+
       <li>
         <a class="tn-link {{ 'active' if request.path == '/analytics' else '' }}" href="/analytics"><i
             class="bi bi-bar-chart-fill me-1 text-teal"></i>Analytics</a>
@@ -158,7 +156,7 @@
           {{ current_user.username }}
         </a>
       </li>
-      <li><a class="tn-link" href="/logout">Logout</a></li>
+
       {% else %}
       <li><a class="tn-link" href="/login">Login</a></li>
       <li><a class="tn-cta" href="/signup">Get Started</a></li>

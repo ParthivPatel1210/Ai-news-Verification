@@ -18,6 +18,10 @@ class User(UserMixin, db.Model):
     location = db.Column(db.String(100), nullable=True)
     joined_date = db.Column(db.DateTime, default=datetime.utcnow)
     theme_preference = db.Column(db.String(10), default='dark')
+    city = db.Column(db.String(100), nullable=True)
+    country = db.Column(db.String(100), nullable=True)
+    birthdate = db.Column(db.Date, nullable=True)
+    gender = db.Column(db.String(20), nullable=True)
 
     def get_id(self):
         return str(self.id)
@@ -44,3 +48,10 @@ class Prediction(db.Model):
     is_public = db.Column(db.Boolean, default=False)
 
     user = db.relationship('User', backref=db.backref('predictions', lazy='dynamic'))
+
+class Vote(db.Model):
+    __tablename__ = 'votes'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    prediction_id = db.Column(db.Integer, db.ForeignKey('predictions.id'), nullable=False)
+    vote_type = db.Column(db.Integer, nullable=False) # 1 for up, -1 for down
