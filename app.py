@@ -546,17 +546,22 @@ def analytics():
     return render_template('analytics.html', stats=stats, trending=trending)
 
 
-@app.route('/api/news')
-def get_news():
+@app.route('/api/ai_news')
+def get_ai_news():
     url = "https://news.google.com/rss/search?q=%22Artificial+Intelligence%22+OR+%22AI%22+when:1d&hl=en-US&gl=US&ceid=US:en"
-    
+    return _fetch_google_rss(url, limit=5)
+
+@app.route('/api/world_news')
+def get_world_news():
+    url = "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en"
+    return _fetch_google_rss(url, limit=10)
+
+def _fetch_google_rss(url, limit=10):
     try:
         req = urllib.request.Request(
             url, 
             data=None, 
-            headers={
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-            }
+            headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)'}
         )
         ctx = ssl.create_default_context()
         ctx.check_hostname = False
@@ -568,26 +573,17 @@ def get_news():
         items = root.findall('.//item')
         
         news_list = []
-        # Get top 10 news items
-        for item in items[:10]:
+        for item in items[:limit]:
             title = item.find('title').text if item.find('title') is not None else 'No title'
             link = item.find('link').text if item.find('link') is not None else '#'
             pub_date = item.find('pubDate').text if item.find('pubDate') is not None else ''
-            # source = item.find('source').text if item.find('source') is not None else 'Unknown'
-            
-            news_list.append({
-                'title': title,
-                'link': link,
-                'pubDate': pub_date
-            })
+            news_list.append({'title': title, 'link': link, 'pubDate': pub_date})
             
         return jsonify({'status': 'success', 'articles': news_list})
-        
     except Exception as e:
-        print(f"Error fetching news: {e}")
+        print(f"API Error: {e}")
         return jsonify({'status': 'error', 'message': 'Failed to fetch news'}), 500
 
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
-

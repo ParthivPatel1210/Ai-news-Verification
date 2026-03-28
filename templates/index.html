@@ -4,20 +4,6 @@
 
 {% block content %}
 <div class="hero-shell">
-  <!-- Fake News Alert Scrolling Marquee -->
-  <div class="marquee-container">
-    <div class="marquee-content">
-      <span><span class="alert-tag">Trending</span> US and Iran diplomatic tensions rise over new sanctions <a href="#"
-          style="color:#2dd4bf; text-decoration:underline;">[Verify Source]</a></span>
-      <span><span class="alert-tag">Alert</span> Deepfake video of political candidate surfaces on social media <a
-          href="#" style="color:#2dd4bf; text-decoration:underline;">[Verify Source]</a></span>
-      <span><span class="alert-tag">Trending</span> Global markets react abruptly to unverified AI news reports <a
-          href="#" style="color:#2dd4bf; text-decoration:underline;">[Verify Source]</a></span>
-      <span><span class="alert-tag">Alert</span> False reports of major tech CEO stepping down debunked <a href="#"
-          style="color:#2dd4bf; text-decoration:underline;">[Verify Source]</a></span>
-    </div>
-  </div>
-
   <div class="grid-overlay"></div>
 
   <!-- Floating particles -->
@@ -110,15 +96,17 @@
         </div>
 
         <!-- Latest News Section -->
-        <div class="glass-card mt-4 p-4 p-md-5" style="display:flex; flex-direction:column; max-height: 500px;">
-          <h4 class="mb-3" style="color: var(--text-primary); display: flex; align-items: center; justify-content: space-between;">
-            <span><i class="bi bi-newspaper me-2"></i>Latest AI News</span>
-            <span id="news-loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
-              style="display: none;"></span>
-          </h4>
-          <div id="news-container" class="news-list" style="overflow-y: auto; flex-grow: 1; padding-right: 10px;">
-            <div class="text-center text-muted py-4" id="news-placeholder">
-              Fetching latest headlines...
+        <div class="glass-card mt-4 p-4 p-md-5" style="display:flex; flex-direction:column;">
+          <div class="history-card" style="height: 100%;">
+            <div class="history-head mb-4 border-bottom pb-3" style="border-color: var(--border-light) !important;">
+              <div class="history-title" style="font-size: 1.25rem;">
+                <span><i class="bi bi-robot me-2" style="color: #10b981;"></i>Latest AI News</span>
+              </div>
+            </div>
+            <div id="ai-news-container" class="news-list" style="max-height: 400px; overflow-y: auto;">
+              <div class="text-center text-muted py-4" id="ai-news-placeholder">
+                Fetching latest AI developments...
+              </div>
             </div>
           </div>
         </div>
@@ -153,6 +141,20 @@
     </div>
   </div>
 </div>
+
+<!-- Global Impact News Horizontal Carousel -->
+<section style="background: var(--bg-card); border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); padding: 40px 0; overflow: hidden;">
+  <div class="container-fluid container-inner">
+    <div class="d-flex align-items-center mb-4 px-3">
+      <h3 class="theme-text fw-bold mb-0" style="font-family:'Outfit', sans-serif;"><i class="bi bi-globe-americas me-2" style="color: #ef4444;"></i>World Impact News</h3>
+      <div class="ms-auto theme-muted small text-uppercase fw-bold" style="letter-spacing: 1px;">Live Coverage</div>
+    </div>
+    
+    <div class="thick-marquee-wrapper" id="world-news-container">
+      <div class="text-muted w-100 text-center py-4">Loading top global stories...</div>
+    </div>
+  </div>
+</section>
 
 <!-- How It Works Section -->
 <section class="section-padding">
@@ -570,46 +572,100 @@
 </script>
 <script>
   // Fetch and display news
+  // Fetch and display dual-pipeline news
   async function loadNews() {
-    const newsContainer = document.getElementById('news-container');
-    const newsPlaceholder = document.getElementById('news-placeholder');
-    const newsLoading = document.getElementById('news-loading');
+    const aiContainer = document.getElementById('ai-news-container');
+    const worldContainer = document.getElementById('world-news-container');
 
-    newsLoading.style.display = 'inline-block';
-
+    // 1. Fetch AI News (Vertical)
     try {
-      const res = await fetch('/api/news');
-      const data = await res.json();
-
-      if (data.status === 'success' && data.articles.length > 0) {
-        let html = '';
-        data.articles.forEach(article => {
-          // Format date if possible
+      const resAI = await fetch('/api/ai_news');
+      const dataAI = await resAI.json();
+      if (dataAI.status === 'success' && dataAI.articles.length > 0) {
+        let htmlAI = '';
+        dataAI.articles.forEach(article => {
           let dateStr = article.pubDate;
           try {
             const d = new Date(article.pubDate);
-            if (!isNaN(d.getTime())) {
-              dateStr = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-            }
+            if (!isNaN(d.getTime())) dateStr = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
           } catch (e) { }
-
-          html += `
-            <a href="${article.link}" target="_blank" rel="noopener noreferrer" class="news-item d-block p-3 mb-2 rounded text-decoration-none">
-              <h6 class="mb-1 theme-text" style="line-height: 1.4;">${article.title}</h6>
-              <div class="text-muted small"><i class="bi bi-clock me-1"></i>${dateStr}</div>
+          htmlAI += `
+            <a href="${article.link}" target="_blank" rel="noopener noreferrer" class="news-item d-block p-3 mb-2 rounded text-decoration-none theme-card shadow-sm" style="transition: transform 0.2s;">
+              <h6 class="mb-2 theme-text fw-bold" style="font-size:0.9rem; line-height: 1.4;">${article.title}</h6>
+              <div class="theme-muted" style="font-size:0.75rem;"><i class="bi bi-clock me-1"></i>${dateStr}</div>
             </a>
           `;
         });
-        newsContainer.innerHTML = html;
+        aiContainer.innerHTML = htmlAI;
       } else {
-        newsContainer.innerHTML = '<div class="text-muted p-3">No news available at the moment.</div>';
+        aiContainer.innerHTML = '<div class="theme-muted p-3">No news available at the moment.</div>';
+      }
+    } catch (err) {
+      console.error(err);
+      aiContainer.innerHTML = '<div class="alert alert-danger p-2 small">Failed to load news.</div>';
+    }
+
+    // 2. Fetch World Impact News (Horizontal Thick Cards)
+    try {
+      const resWorld = await fetch('/api/world_news');
+      const dataWorld = await resWorld.json();
+      if (dataWorld.status === 'success' && dataWorld.articles.length > 0) {
+        let htmlWorld = '';
+        
+        // Array of high quality generic global conflict/news impact images
+        const stockImages = [
+          "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=800",
+          "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&q=80&w=800",
+          "https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&q=80&w=800",
+          "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=800",
+          "https://images.unsplash.com/photo-1563906267088-b029e7101114?auto=format&fit=crop&q=80&w=800",
+          "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?auto=format&fit=crop&q=80&w=800",
+          "https://images.unsplash.com/photo-1572949645841-094f3a9c4c94?auto=format&fit=crop&q=80&w=800",
+          "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800"
+        ];
+
+        // Duplicate the articles array to allow a seamless infinite loop from -50% to 0%
+        const infinitelyLoopedArticles = [...dataWorld.articles, ...dataWorld.articles];
+
+        htmlWorld += `<div class="thick-marquee-content" style="gap: 20px; padding: 0 10px;">`;
+
+        infinitelyLoopedArticles.forEach((article, index) => {
+          let dateStr = article.pubDate;
+          try {
+            const d = new Date(article.pubDate);
+            if (!isNaN(d.getTime())) dateStr = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+          } catch (e) { }
+
+          let imgUrl = stockImages[index % stockImages.length];
+
+          htmlWorld += `
+            <a href="${article.link}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+              <div class="card theme-card shadow-sm" style="width: 380px; height: 100%; border-radius: 12px; transition: transform 0.2s ease, border-color 0.2s; border: 1px solid var(--border-light); overflow:hidden;">
+                <div style="position: relative;">
+                  <img src="${imgUrl}" class="card-img-top" alt="World News" style="height: 200px; object-fit: cover;">
+                  <div style="position: absolute; top: 12px; left: 12px;">
+                    <span class="badge" style="background: rgba(239, 68, 68, 0.9); backdrop-filter: blur(4px); font-weight: 700; padding: 6px 10px;"><i class="bi bi-broadcast me-1"></i>BREAKING</span>
+                  </div>
+                </div>
+                <div class="card-body p-4 d-flex flex-column">
+                  <h5 class="card-title theme-text fw-bold mb-3" style="line-height: 1.4; font-size: 1.15rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${article.title}</h5>
+                  <div class="mt-auto pt-2">
+                    <p class="theme-muted small mb-0"><i class="bi bi-clock me-1"></i>${dateStr}</p>
+                  </div>
+                </div>
+              </div>
+            </a>
+          `;
+        });
+        
+        htmlWorld += `</div>`;
+        worldContainer.innerHTML = htmlWorld;
+      } else {
+        worldContainer.innerHTML = '<div class="theme-muted p-3">No world news available at the moment.</div>';
       }
     } catch (err) {
       console.error('Error fetching news:', err);
-      newsContainer.innerHTML = '<div class="alert alert-danger p-2 small">Failed to load news.</div>';
-    } finally {
-      newsLoading.style.display = 'none';
-      if (newsPlaceholder) newsPlaceholder.style.display = 'none';
+      worldContainer.innerHTML = '<div class="alert alert-danger p-2 small">Failed to load world news.</div>';
     }
   }
 

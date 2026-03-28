@@ -359,9 +359,9 @@ textarea.form-control {
 .marquee-container {
   width: 100%;
   overflow: hidden;
-  background: rgba(2, 6, 23, 0.95);
-  border-bottom: 1px solid rgba(16, 185, 129, 0.3);
-  color: #34d399;
+  background: var(--hero-bg);
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
   padding: 10px 0;
   position: relative;
   z-index: 100;
@@ -370,27 +370,26 @@ textarea.form-control {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
-.marquee-content {
-  display: inline-block;
-  white-space: nowrap;
-  animation: marquee 35s linear infinite;
+.thick-marquee-wrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
   display: flex;
-  align-items: center;
-  gap: 40px;
 }
 
-.marquee-content:hover {
+.thick-marquee-content {
+  display: flex;
+  width: max-content;
+  animation: marqueeLeftToRight 50s linear infinite;
+}
+
+.thick-marquee-content:hover {
   animation-play-state: paused;
 }
 
-@keyframes marquee {
-  0% {
-    transform: translateX(100vw);
-  }
-
-  100% {
-    transform: translateX(-100%);
-  }
+@keyframes marqueeLeftToRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
 }
 
 .alert-tag {
