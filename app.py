@@ -3,7 +3,7 @@ import joblib
 from pathlib import Path
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from models import db, User, Prediction
+from models import db, User, Prediction, Vote
 import urllib.request
 import urllib.error
 import xml.etree.ElementTree as ET
@@ -556,7 +556,9 @@ def vote_prediction(pid, action):
     if action == 'upvote':
         if user_vote:
             if user_vote.vote_type == 1:
-                return jsonify({'upvotes': p.upvotes, 'downvotes': p.downvotes}) # already upvoted
+                # UN-VOTE
+                db.session.delete(user_vote)
+                p.upvotes = max(0, (p.upvotes or 0) - 1)
             else:
                 user_vote.vote_type = 1
                 p.upvotes = (p.upvotes or 0) + 1
@@ -569,7 +571,9 @@ def vote_prediction(pid, action):
     elif action == 'downvote':
         if user_vote:
             if user_vote.vote_type == -1:
-                return jsonify({'upvotes': p.upvotes, 'downvotes': p.downvotes}) # already downvoted
+                # UN-VOTE
+                db.session.delete(user_vote)
+                p.downvotes = max(0, (p.downvotes or 0) - 1)
             else:
                 user_vote.vote_type = -1
                 p.downvotes = (p.downvotes or 0) + 1
