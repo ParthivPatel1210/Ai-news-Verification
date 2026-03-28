@@ -154,7 +154,7 @@
       <li>
         <a class="tn-link {{ 'active' if request.path == '/dashboard' else '' }}" href="/dashboard"
           style="display:flex;align-items:center;">
-          <span class="user-avatar">{{ current_user.username[0]|upper }}</span>
+          <img src="{{ current_user.profile_picture }}" alt="User Avatar" class="user-avatar" style="object-fit: cover; border: 1px solid #10b981;" />
           {{ current_user.username }}
         </a>
       </li>
