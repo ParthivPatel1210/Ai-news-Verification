@@ -53,15 +53,15 @@
     }
 
     .topbar-brand img {
-      height: 48px;
-      width: 48px;
+      height: 64px;
+      width: 64px;
     }
 
     .topbar-brand-name {
       font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      font-size: 1.15rem;
-      background: linear-gradient(90deg, #34d399, #2dd4bf);
+      font-weight: 800;
+      font-size: 1.6rem;
+      background: linear-gradient(90deg, var(--text-primary), #3b82f6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -127,6 +127,37 @@
     .flash-zone {
       padding: 0 24px;
     }
+
+    /* Mobile Topbar Adaptive Stack */
+    @media (max-width: 768px) {
+      .topbar {
+        height: auto;
+        flex-direction: column;
+        padding: 12px 16px;
+      }
+      .topbar-brand {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 12px;
+      }
+      .topbar-brand img {
+        height: 48px;
+        width: 48px;
+      }
+      .topbar-brand-name {
+        font-size: 1.4rem;
+      }
+      .topbar-nav {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .topbar-nav .tn-link {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+      }
+    }
   </style>
   {% block head %}{% endblock %}
 </head>
@@ -134,8 +165,8 @@
 <body>
   <nav class="topbar">
     <a class="topbar-brand" href="/">
-      <img src="/static/img/logo_transparent.png" alt="logo" />
-      <span class="topbar-brand-name">AI NewsVerifier</span>
+      <img src="/static/img/logo_blue_transparent.png" alt="logo" />
+      <span class="topbar-brand-name ms-2">AI NewsVerifier</span>
     </a>
     <ul class="topbar-nav">
       <li><a class="tn-link" href="/">Home</a></li>
