@@ -12,9 +12,9 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(200), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
     
-    # Profile Extensions
     bio = db.Column(db.Text, nullable=True)
     profile_picture = db.Column(db.String(255), default='https://ui-avatars.com/api/?name=User&background=10b981&color=fff')
+    avatar_base64 = db.Column(db.Text, nullable=True)
     location = db.Column(db.String(100), nullable=True)
     joined_date = db.Column(db.DateTime, default=datetime.utcnow)
     theme_preference = db.Column(db.String(10), default='dark')

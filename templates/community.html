@@ -20,8 +20,8 @@
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <div class="d-flex align-items-center">
-                            <img src="{{ post.user.profile_picture }}" alt="User Avatar" class="rounded-circle me-3"
-                                style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #3b82f6;">
+                            <img src="{% if post.user.avatar_base64 %}data:image/jpeg;base64,{{ post.user.avatar_base64 }}{% else %}{{ post.user.profile_picture }}{% endif %}" alt="User Avatar" class="rounded-circle me-3"
+                                 style="width: 48px; height: 48px; object-fit: cover; border: 2px solid var(--border-light);">
                             <div>
                                 <h6 class="mb-0 fw-bold theme-text">{{ post.user.username }}</h6>
                                 <small class="text-muted"><i class="bi bi-geo-alt-fill text-secondary"></i> {{

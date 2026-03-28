@@ -375,7 +375,7 @@
     <div class="history-card mb-4" style="border-radius: 16px;">
       <div class="d-flex align-items-center justify-content-between p-4 flex-wrap gap-3">
         <div class="d-flex align-items-center gap-4">
-          <img src="{{ current_user.profile_picture }}" alt="Avatar" class="rounded-circle shadow" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid var(--brand); background: var(--bg-card);">
+          <img src="{% if current_user.avatar_base64 %}data:image/jpeg;base64,{{ current_user.avatar_base64 }}{% else %}{{ current_user.profile_picture }}{% endif %}" alt="Avatar" class="rounded-circle shadow" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid var(--brand); background: var(--bg-card);">
           <div>
             <h4 class="mb-1 theme-text fw-bold">{{ current_user.username }}</h4>
             <div class="theme-muted small mb-2">
@@ -407,20 +407,21 @@
     </div>
 
     <!-- Collapsible Edit Profile Form -->
-    <div class="collapse mb-4" id="editProfileCollapse">
-      <div class="history-card">
-        <div class="history-head" style="border-bottom: 1px solid var(--border-light); padding-bottom: 16px; margin-bottom: 20px;">
-          <div class="history-title"><i class="bi bi-person-badge me-2" style="color:#2dd4bf;"></i>Edit Public Profile</div>
-        </div>
-        <form method="POST" action="/dashboard" class="row g-3">
+      <div class="collapse" id="editProfileCollapse">
+        <div class="card mt-4 shadow-sm" style="border-radius: 16px; border: 1px solid var(--border-light); background: var(--bg-card);">
+          <div class="card-body p-4 p-md-5">
+            <h5 class="theme-text mb-4 fw-bold"><i class="bi bi-pencil-square me-2" style="color: #3b82f6;"></i> Update Public Profile</h5>
+            <form method="POST" action="/dashboard" enctype="multipart/form-data" class="row g-3">
           <div class="col-md-2 text-center d-flex flex-column align-items-center justify-content-center">
-              <img src="{{ current_user.profile_picture }}" alt="Avatar" class="rounded-circle shadow" style="width: 80px; height: 80px; object-fit: cover; border: 2px solid #10b981; background: var(--bg-card);">
+              <img src="{% if current_user.avatar_base64 %}data:image/jpeg;base64,{{ current_user.avatar_base64 }}{% else %}{{ current_user.profile_picture }}{% endif %}" alt="Avatar" class="rounded-circle shadow" style="width: 80px; height: 80px; object-fit: cover; border: 2px solid #10b981; background: var(--bg-card);">
           </div>
           <div class="col-md-10">
             <div class="row g-3">
-              <div class="col-md-6">
-                <label class="form-label theme-muted small text-uppercase fw-bold" style="letter-spacing: 0.04em;">Avatar URL</label>
-                <input type="url" name="profile_picture" class="form-control theme-input" value="{{ current_user.profile_picture }}" style="border-radius: 8px;">
+              <div class="flex-grow-1">
+                <label class="form-label theme-muted fw-bold small text-uppercase">Profile Picture</label>
+                <input type="file" accept="image/*" name="profile_picture_file" class="form-control theme-input mb-2" style="border-radius: 8px;">
+                <div class="text-muted small mb-1">Or provide an Image URL:</div>
+                <input type="url" name="profile_picture" class="form-control theme-input" value="{{ current_user.profile_picture }}" style="border-radius: 8px;" placeholder="https://...">
               </div>
               <div class="col-md-6">
                 <label class="form-label theme-muted small text-uppercase fw-bold" style="letter-spacing: 0.04em;">Gender</label>

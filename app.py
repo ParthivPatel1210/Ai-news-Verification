@@ -67,6 +67,14 @@ from sqlalchemy import text
 with app.app_context():
     db.create_all()
     
+    # Dynamically inject the new Base64 column into deployed Postgres/SQLite instances
+    try:
+        db.session.execute(text('ALTER TABLE users ADD COLUMN avatar_base64 TEXT'))
+        db.session.commit()
+        print("Successfully migrated avatar_base64 column.")
+    except Exception:
+        db.session.rollback()
+    
     # Live schema migration for new accounts table columns
     try:
         db.session.execute(text("ALTER TABLE users ADD COLUMN theme_preference VARCHAR(10) DEFAULT 'dark';"))
@@ -441,6 +449,22 @@ def dashboard():
         birthdate_str = request.form.get('birthdate')
         profile_picture = request.form.get('profile_picture')
         
+        # Base64 Persistent Fast-Avatar Processor
+        avatar_file = request.files.get('profile_picture_file')
+        if avatar_file and avatar_file.filename != '':
+            try:
+                from PIL import Image
+                import io
+                import base64
+                img = Image.open(avatar_file.stream).convert('RGB')
+                img.thumbnail((250, 250)) # Compress for DB storage performance
+                buffered = io.BytesIO()
+                img.save(buffered, format="JPEG", quality=85)
+                img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+                current_user.avatar_base64 = img_str
+            except Exception as e:
+                flash(f"Error processing image: {str(e)}")
+
         current_user.bio = bio
         current_user.city = city
         current_user.country = country
