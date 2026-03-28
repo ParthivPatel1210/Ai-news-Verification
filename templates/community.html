@@ -5,7 +5,7 @@
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-5">
         <div>
-            <h2 class="fw-bold" style="font-family: 'Outfit', sans-serif; color: #f1f5f9;">
+            <h2 class="fw-bold" style="font-family: 'Outfit', sans-serif; color: var(--text-primary);">
                 <i class="bi bi-globe-americas me-2 text-primary"></i> Global Community Feed
             </h2>
             <p class="text-muted mb-0">See what news other users are verifying globally in real-time.</p>
@@ -29,13 +29,13 @@
                             </div>
                         </div>
                         <span class="badge"
-                            style="background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);">
+                            style="background: var(--bg-card); color: var(--text-muted); border: 1px solid var(--border-light);">
                             {{ post.timestamp.strftime('%b %d, %H:%M') }}
                         </span>
                     </div>
 
                     <div class="p-3 mb-3 rounded"
-                        style="background: rgba(0,0,0,0.2); border-left: 3px solid #3b82f6; color: #e2e8f0; font-style: italic;">
+                        style="background: var(--bg-card-hover); border-left: 3px solid #3b82f6; color: var(--text-primary); font-style: italic;">
                         "{{ post.text[:400] }}{% if post.text|length > 400 %}...{% endif %}"
                     </div>
 
@@ -61,13 +61,13 @@
 
                     {% if post.explanation %}
                     <div class="p-3 mb-3 rounded"
-                        style="background: rgba(255,255,255,0.03); color: #cbd5e1; font-size: 0.9rem;">
+                        style="background: var(--bg-card); color: var(--text-muted); font-size: 0.9rem;">
                         <strong><i class="bi bi-robot text-teal"></i> AI Reasoning:</strong> {{ post.explanation }}
                     </div>
                     {% endif %}
 
                     <div class="d-flex align-items-center justify-content-end gap-3"
-                        style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px;">
+                        style="border-top: 1px solid var(--border-light); padding-top: 16px;">
                         <button class="btn btn-sm btn-outline-success d-flex align-items-center"
                             onclick="voteCommunity({{ post.id }}, 'upvote')" id="upvote-btn-{{ post.id }}">
                             <i class="bi bi-hand-thumbs-up me-2"></i> <span id="upvotes-count-{{ post.id }}">{{
@@ -86,7 +86,7 @@
         <div class="col-12 text-center py-5">
             <div class="mb-4" style="font-size: 4rem; color: #334155;"><i class="bi bi-globe-x"></i></div>
             <h4 class="text-muted">The community feed is empty right now.</h4>
-            <p style="color: #64748b;">Be the first to perform a verification and publish it for the world to see!</p>
+            <p style="color: var(--text-muted);">Be the first to perform a verification and publish it for the world to see!</p>
         </div>
         {% endfor %}
     </div>

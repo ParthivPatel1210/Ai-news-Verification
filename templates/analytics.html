@@ -55,7 +55,7 @@
     }
 
     .stat-label {
-        color: #94a3b8;
+        color: var(--text-muted);
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -73,7 +73,7 @@
 
     .feed-item {
         border-left: 3px solid #10b981;
-        background: rgba(0, 0, 0, 0.3);
+        background: var(--bg-card-hover);
         padding: 15px 20px;
         border-radius: 0 10px 10px 0;
         margin-bottom: 15px;
@@ -153,13 +153,13 @@
                 <p class="text-light mb-1" style="font-size: 0.95rem;">
                     {% if item.url %}
                     <a href="{{ item.url }}" target="_blank"
-                        style="color: #cbd5e1; text-decoration: none;"><strong>[Source Link]</strong></a>
+                        style="color: var(--text-muted); text-decoration: none;"><strong>[Source Link]</strong></a>
                     {% endif %}
                     {{ item.text[:250] }}...
                 </p>
                 {% if item.explanation %}
                 <div class="text-muted mt-2"
-                    style="font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top:8px;">
+                    style="font-size: 0.85rem; border-top: 1px solid var(--border-light); padding-top:8px;">
                     <i class="bi bi-robot"></i> {{ item.explanation }}
                 </div>
                 {% endif %}

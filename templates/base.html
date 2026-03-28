@@ -24,9 +24,9 @@
     }
 
     body {
-      background: #0a0f1e;
+      background-color: var(--bg-main);
       font-family: 'Plus Jakarta Sans', sans-serif;
-      color: #e2e8f0;
+      color: var(--text-primary);
     }
 
     /* ── NAVBAR ── */
@@ -37,7 +37,7 @@
       background: rgba(10, 15, 30, 0.85);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      border-bottom: 1px solid var(--border-light);
       padding: 0 28px;
       height: 64px;
       display: flex;
@@ -78,7 +78,7 @@
     }
 
     .topbar-nav .tn-link {
-      color: #94a3b8;
+      color: var(--text-muted);
       font-size: 0.9rem;
       font-weight: 500;
       padding: 7px 14px;
@@ -89,8 +89,8 @@
     }
 
     .topbar-nav .tn-link:hover {
-      color: #e2e8f0;
-      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-primary);
+      background: var(--bg-card);
     }
 
     .topbar-nav .tn-cta {
@@ -171,7 +171,7 @@
   <div class="flash-zone mt-3">
     {% for category, msg in messages %}
     <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert"
-      style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;">
+      style="background: var(--bg-card);border: 1px solid var(--border-light);color: var(--text-primary);">
       {{ msg }}
       <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
     </div>

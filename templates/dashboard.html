@@ -10,7 +10,7 @@
     background:
       radial-gradient(ellipse at 10% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
       radial-gradient(ellipse at 90% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
-      #0a0f1e;
+      var(--hero-bg);
   }
 
   .dash-inner {
@@ -32,7 +32,7 @@
     font-family: 'Space Grotesk', sans-serif;
     font-size: 1.6rem;
     font-weight: 700;
-    color: #f1f5f9;
+    color: var(--text-primary);
     letter-spacing: -0.03em;
   }
 
@@ -45,7 +45,7 @@
 
   .dash-meta {
     font-size: 0.875rem;
-    color: #64748b;
+    color: var(--text-muted);
     margin-top: 4px;
   }
 
@@ -79,13 +79,13 @@
   }
 
   .dash-btn-ghost {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #94a3b8;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    color: var(--text-muted);
   }
 
   .dash-btn-ghost:hover {
-    color: #e2e8f0;
+    color: var(--text-primary);
   }
 
   /* ── Stat Cards ── */
@@ -97,7 +97,7 @@
   }
 
   .stat-card {
-    background: rgba(17, 24, 39, 0.7);
+    background: var(--glass-bg);
     border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 16px;
     padding: 20px 22px;
@@ -109,7 +109,7 @@
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #64748b;
+    color: var(--text-muted);
     margin-bottom: 10px;
   }
 
@@ -117,7 +117,7 @@
     font-family: 'Space Grotesk', sans-serif;
     font-size: 2rem;
     font-weight: 700;
-    color: #f1f5f9;
+    color: var(--text-primary);
     line-height: 1;
     margin-bottom: 4px;
   }
@@ -143,7 +143,7 @@
 
   /* ── History Table ── */
   .history-card {
-    background: rgba(17, 24, 39, 0.7);
+    background: var(--glass-bg);
     border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 20px;
     backdrop-filter: blur(8px);
@@ -152,7 +152,7 @@
 
   .history-head {
     padding: 22px 28px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--border-light);
     display: flex;
     align-items: center;
     gap: 12px;
@@ -162,14 +162,14 @@
     font-family: 'Space Grotesk', sans-serif;
     font-size: 1.05rem;
     font-weight: 600;
-    color: #e2e8f0;
+    color: var(--text-primary);
     flex: 1;
   }
 
   .history-count {
     font-size: 0.8rem;
-    background: rgba(255, 255, 255, 0.07);
-    color: #94a3b8;
+    background: var(--bg-card);
+    color: var(--text-muted);
     padding: 3px 10px;
     border-radius: 100px;
     font-weight: 500;
@@ -186,7 +186,7 @@
   }
 
   .dash-table thead tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--border-light);
   }
 
   .dash-table th {
@@ -196,13 +196,13 @@
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #64748b;
+    color: var(--text-muted);
     white-space: nowrap;
   }
 
   .dash-table td {
     padding: 13px 20px;
-    color: #cbd5e1;
+    color: var(--text-muted);
     vertical-align: middle;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   }
@@ -212,7 +212,7 @@
   }
 
   .dash-table tbody tr:hover td {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--bg-card);
   }
 
   .snippet-cell {
@@ -220,7 +220,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: #94a3b8;
+    color: var(--text-muted);
     font-size: 0.82rem;
   }
 
@@ -262,7 +262,7 @@
   .conf-bar {
     flex: 1;
     height: 4px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--bg-card);
     border-radius: 99px;
     overflow: hidden;
   }
@@ -281,7 +281,7 @@
 
   .conf-pct {
     font-size: 0.8rem;
-    color: #94a3b8;
+    color: var(--text-muted);
     white-space: nowrap;
   }
 
@@ -374,7 +374,7 @@
     <!-- Profile Settings -->
     <div class="history-card" style="margin-bottom: 32px;">
       <div class="history-head"
-        style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; margin-bottom: 20px;">
+        style="border-bottom: 1px solid var(--border-light); padding-bottom: 16px; margin-bottom: 20px;">
         <div class="history-title"><i class="bi bi-person-badge me-2" style="color:#2dd4bf;"></i>Public Profile Settings
         </div>
       </div>
@@ -390,21 +390,21 @@
               <label class="form-label text-muted small text-uppercase fw-bold" style="letter-spacing: 0.04em;">Avatar
                 URL</label>
               <input type="url" name="profile_picture" class="form-control"
-                style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px;"
+                style="background: var(--bg-card); border: 1px solid var(--border-light); color: var(--text-primary); border-radius: 8px;"
                 value="{{ current_user.profile_picture }}">
             </div>
             <div class="col-md-6">
               <label class="form-label text-muted small text-uppercase fw-bold"
                 style="letter-spacing: 0.04em;">Location</label>
               <input type="text" name="location" class="form-control"
-                style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px;"
+                style="background: var(--bg-card); border: 1px solid var(--border-light); color: var(--text-primary); border-radius: 8px;"
                 value="{{ current_user.location or '' }}" placeholder="City, Country">
             </div>
             <div class="col-12">
               <label class="form-label text-muted small text-uppercase fw-bold"
                 style="letter-spacing: 0.04em;">Bio</label>
               <textarea name="bio" class="form-control" rows="2"
-                style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px;"
+                style="background: var(--bg-card); border: 1px solid var(--border-light); color: var(--text-primary); border-radius: 8px;"
                 placeholder="Tell the global community about yourself...">{{ current_user.bio or '' }}</textarea>
             </div>
             <div class="col-12 text-end">
@@ -418,18 +418,18 @@
 
     <!-- Advanced Account Settings -->
     <div class="history-card" style="margin-bottom: 32px;">
-      <div class="history-head" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; margin-bottom: 20px;">
+      <div class="history-head" style="border-bottom: 1px solid var(--border-light); padding-bottom: 16px; margin-bottom: 20px;">
         <div class="history-title"><i class="bi bi-shield-lock me-2" style="color:#f87171;"></i>Security & Preferences</div>
       </div>
       
       <div class="row g-4">
         <!-- Theme Selector -->
         <div class="col-md-4">
-          <form method="POST" action="/settings/theme" class="p-3 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); height: 100%;">
-            <label class="form-label text-muted small text-uppercase fw-bold"><i class="bi bi-moon-stars me-1"></i> Interface Theme</label>
-            <select name="theme" class="form-control mb-3" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px; appearance: auto;">
-              <option value="dark" style="background: #0a0f1e;" {% if current_user.theme_preference == 'dark' %}selected{% endif %}>Dark Mode (Default)</option>
-              <option value="light" style="background: #0a0f1e;" {% if current_user.theme_preference == 'light' %}selected{% endif %}>Light Mode</option>
+          <form method="POST" action="/settings/theme" class="p-3 rounded theme-card" style="height: 100%;">
+            <label class="form-label theme-muted small text-uppercase fw-bold"><i class="bi bi-moon-stars me-1"></i> Interface Theme</label>
+            <select name="theme" class="form-control mb-3 theme-input" style="border-radius: 8px; appearance: auto;">
+              <option value="dark" {% if current_user.theme_preference == 'dark' %}selected{% endif %}>Dark Mode (Default)</option>
+              <option value="light" {% if current_user.theme_preference == 'light' %}selected{% endif %}>Light Mode</option>
             </select>
             <button type="submit" class="dash-btn dash-btn-ghost w-100 mt-2" style="padding: 8px;"><i class="bi bi-palette me-1"></i> Apply Theme</button>
           </form>
@@ -437,20 +437,20 @@
 
         <!-- Change Username -->
         <div class="col-md-4">
-          <form method="POST" action="/settings/username" class="p-3 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); height: 100%;">
-            <label class="form-label text-muted small text-uppercase fw-bold"><i class="bi bi-person-fill-gear me-1"></i> Change Username</label>
-            <input type="text" name="new_username" class="form-control mb-2" required placeholder="New Username" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; font-size: 0.9rem; border-radius: 8px;">
-            <input type="password" name="password" class="form-control mb-3" required placeholder="Current Password" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; font-size: 0.9rem; border-radius: 8px;">
+          <form method="POST" action="/settings/username" class="p-3 rounded theme-card" style="height: 100%;">
+            <label class="form-label theme-muted small text-uppercase fw-bold"><i class="bi bi-person-fill-gear me-1"></i> Change Username</label>
+            <input type="text" name="new_username" class="form-control mb-2 theme-input" required placeholder="New Username" style="font-size: 0.9rem; border-radius: 8px;">
+            <input type="password" name="password" class="form-control mb-3 theme-input" required placeholder="Current Password" style="font-size: 0.9rem; border-radius: 8px;">
             <button type="submit" class="dash-btn dash-btn-ghost w-100" style="padding: 8px; color:#34d399;"><i class="bi bi-arrow-repeat me-1"></i> Update Username</button>
           </form>
         </div>
 
         <!-- Change Password -->
         <div class="col-md-4">
-          <form method="POST" action="/settings/password" class="p-3 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); height: 100%;">
-            <label class="form-label text-muted small text-uppercase fw-bold"><i class="bi bi-key me-1"></i> Rotate Password</label>
-            <input type="password" name="old_password" class="form-control mb-2" required placeholder="Current Password" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; font-size: 0.9rem; border-radius: 8px;">
-            <input type="password" name="new_password" class="form-control mb-3" required placeholder="New Password" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; font-size: 0.9rem; border-radius: 8px;">
+          <form method="POST" action="/settings/password" class="p-3 rounded theme-card" style="height: 100%;">
+            <label class="form-label theme-muted small text-uppercase fw-bold"><i class="bi bi-key me-1"></i> Rotate Password</label>
+            <input type="password" name="old_password" class="form-control mb-2 theme-input" required placeholder="Current Password" style="font-size: 0.9rem; border-radius: 8px;">
+            <input type="password" name="new_password" class="form-control mb-3 theme-input" required placeholder="New Password" style="font-size: 0.9rem; border-radius: 8px;">
             <button type="submit" class="dash-btn dash-btn-ghost w-100" style="padding: 8px; color:#f87171;"><i class="bi bi-shield-lock me-1"></i> Update Password</button>
           </form>
         </div>
@@ -515,7 +515,7 @@
           <tbody>
             {% for item in history %}
             <tr>
-              <td style="white-space:nowrap; color:#64748b; font-size:0.8rem;">
+              <td style="white-space:nowrap; color: var(--text-muted); font-size:0.8rem;">
                 <i class="bi bi-clock me-1"></i>
                 {{ item.timestamp.strftime('%b %d, %Y') }}<br>
                 <span style="color:#475569">{{ item.timestamp.strftime('%H:%M UTC') }}</span>
@@ -564,8 +564,8 @@
 
                 {% if item.explanation %}
                 <div class="mt-2 text-muted small"
-                  style="border-left:2px solid #10b981; padding-left:10px; background:rgba(0,0,0,0.2); padding:10px; border-radius:6px;">
-                  <strong style="color:#e2e8f0;"><i class="bi bi-robot"></i> AI Reasoning:</strong><br>
+                  style="border-left:2px solid #10b981; padding-left:10px; background: var(--bg-card-hover); padding:10px; border-radius:6px;">
+                  <strong style="color: var(--text-primary);"><i class="bi bi-robot"></i> AI Reasoning:</strong><br>
                   {{ item.explanation }}
                 </div>
                 {% endif %}
@@ -593,7 +593,7 @@
                 </form>
                 {% else %}
                 <button class="btn btn-sm" disabled
-                  style="background: rgba(255, 255, 255, 0.05); color: #64748b; border: 1px solid rgba(255, 255, 255, 0.1); width: 100%; border-radius: 8px; font-weight: 600; padding: 6px 0;">
+                  style="background: var(--bg-card); color: var(--text-muted); border: 1px solid var(--border-light); width: 100%; border-radius: 8px; font-weight: 600; padding: 6px 0;">
                   <i class="bi bi-check-circle"></i> Public
                 </button>
                 {% endif %}
