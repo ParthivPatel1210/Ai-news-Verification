@@ -62,8 +62,20 @@ def load_artifacts():
         print('Model artifacts not found. Run `python train.py` first.')
 
 
+from sqlalchemy import text
+
 with app.app_context():
     db.create_all()
+    
+    # Live schema migration for new accounts table columns
+    try:
+        db.session.execute(text("ALTER TABLE users ADD COLUMN theme_preference VARCHAR(10) DEFAULT 'dark';"))
+        db.session.commit()
+        print("Schema Migration: Column theme_preference successfully securely appended to persistent users table.")
+    except Exception:
+        db.session.rollback()
+        print("Schema Migration: Column exists or SQLite syntax mismatch (safe to ignore).")
+        
     load_artifacts()
 
 
@@ -415,6 +427,48 @@ def dashboard():
         
     history = Prediction.query.filter_by(user_id=int(current_user.get_id())).order_by(Prediction.timestamp.desc()).limit(200).all()
     return render_template('dashboard.html', history=history)
+
+
+@app.route('/settings/theme', methods=['POST'])
+@login_required
+def update_theme():
+    theme = request.form.get('theme')
+    if theme in ['light', 'dark']:
+        current_user.theme_preference = theme
+        db.session.commit()
+    return redirect(url_for('dashboard'))
+
+@app.route('/settings/username', methods=['POST'])
+@login_required
+def update_username():
+    new_username = request.form.get('new_username')
+    password = request.form.get('password')
+    if not check_password_hash(current_user.password_hash, password):
+        flash('Incorrect current password.', 'danger')
+        return redirect(url_for('dashboard'))
+    if User.query.filter_by(username=new_username).first():
+        flash('Username is already taken by another user.', 'danger')
+        return redirect(url_for('dashboard'))
+    
+    current_user.username = new_username
+    db.session.commit()
+    flash('Username updated successfully!', 'success')
+    return redirect(url_for('dashboard'))
+
+@app.route('/settings/password', methods=['POST'])
+@login_required
+def update_password():
+    old_password = request.form.get('old_password')
+    new_password = request.form.get('new_password')
+    
+    if not check_password_hash(current_user.password_hash, old_password):
+        flash('Incorrect current password.', 'danger')
+        return redirect(url_for('dashboard'))
+        
+    current_user.password_hash = generate_password_hash(new_password)
+    db.session.commit()
+    flash('Password securely updated!', 'success')
+    return redirect(url_for('dashboard'))
 
 
 @app.route('/community')

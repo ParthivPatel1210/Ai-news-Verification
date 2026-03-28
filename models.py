@@ -17,6 +17,7 @@ class User(UserMixin, db.Model):
     profile_picture = db.Column(db.String(255), default='https://ui-avatars.com/api/?name=User&background=10b981&color=fff')
     location = db.Column(db.String(100), nullable=True)
     joined_date = db.Column(db.DateTime, default=datetime.utcnow)
+    theme_preference = db.Column(db.String(10), default='dark')
 
     def get_id(self):
         return str(self.id)

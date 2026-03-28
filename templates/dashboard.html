@@ -416,6 +416,47 @@
       </form>
     </div>
 
+    <!-- Advanced Account Settings -->
+    <div class="history-card" style="margin-bottom: 32px;">
+      <div class="history-head" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; margin-bottom: 20px;">
+        <div class="history-title"><i class="bi bi-shield-lock me-2" style="color:#f87171;"></i>Security & Preferences</div>
+      </div>
+      
+      <div class="row g-4">
+        <!-- Theme Selector -->
+        <div class="col-md-4">
+          <form method="POST" action="/settings/theme" class="p-3 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); height: 100%;">
+            <label class="form-label text-muted small text-uppercase fw-bold"><i class="bi bi-moon-stars me-1"></i> Interface Theme</label>
+            <select name="theme" class="form-control mb-3" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px; appearance: auto;">
+              <option value="dark" style="background: #0a0f1e;" {% if current_user.theme_preference == 'dark' %}selected{% endif %}>Dark Mode (Default)</option>
+              <option value="light" style="background: #0a0f1e;" {% if current_user.theme_preference == 'light' %}selected{% endif %}>Light Mode</option>
+            </select>
+            <button type="submit" class="dash-btn dash-btn-ghost w-100 mt-2" style="padding: 8px;"><i class="bi bi-palette me-1"></i> Apply Theme</button>
+          </form>
+        </div>
+
+        <!-- Change Username -->
+        <div class="col-md-4">
+          <form method="POST" action="/settings/username" class="p-3 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); height: 100%;">
+            <label class="form-label text-muted small text-uppercase fw-bold"><i class="bi bi-person-fill-gear me-1"></i> Change Username</label>
+            <input type="text" name="new_username" class="form-control mb-2" required placeholder="New Username" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; font-size: 0.9rem; border-radius: 8px;">
+            <input type="password" name="password" class="form-control mb-3" required placeholder="Current Password" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; font-size: 0.9rem; border-radius: 8px;">
+            <button type="submit" class="dash-btn dash-btn-ghost w-100" style="padding: 8px; color:#34d399;"><i class="bi bi-arrow-repeat me-1"></i> Update Username</button>
+          </form>
+        </div>
+
+        <!-- Change Password -->
+        <div class="col-md-4">
+          <form method="POST" action="/settings/password" class="p-3 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); height: 100%;">
+            <label class="form-label text-muted small text-uppercase fw-bold"><i class="bi bi-key me-1"></i> Rotate Password</label>
+            <input type="password" name="old_password" class="form-control mb-2" required placeholder="Current Password" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; font-size: 0.9rem; border-radius: 8px;">
+            <input type="password" name="new_password" class="form-control mb-3" required placeholder="New Password" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; font-size: 0.9rem; border-radius: 8px;">
+            <button type="submit" class="dash-btn dash-btn-ghost w-100" style="padding: 8px; color:#f87171;"><i class="bi bi-shield-lock me-1"></i> Update Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <!-- Stats -->
     <div class="stats-row">
       <div class="stat-card">
