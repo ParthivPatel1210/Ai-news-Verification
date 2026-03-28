@@ -388,8 +388,8 @@ def predict():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
+        username = request.form.get('username').lower().strip() if request.form.get('username') else None
+        email = request.form.get('email').lower().strip() if request.form.get('email') else None
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
         
@@ -420,7 +420,7 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
+        username = request.form.get('username').lower().strip() if request.form.get('username') else None
         password = request.form.get('password')
         user = User.query.filter((User.username == username) | (User.email == username)).first()
         if user and check_password_hash(user.password_hash, password):
