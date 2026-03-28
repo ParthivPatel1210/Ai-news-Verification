@@ -489,7 +489,7 @@
           let credColor = credScore > 7.0 ? '#10b981' : (credScore > 4.0 ? '#f59e0b' : '#ef4444');
           htmlContent += `
               <div class="mb-3">
-                <h6 class="text-light mb-2"><i class="bi bi-shield-check"></i> Source Reliability Assessment</h6>
+                <h6 class="theme-text mb-2"><i class="bi bi-shield-check"></i> Source Reliability Assessment</h6>
                 <span class="credibility-badge ms-0" style="border:1px solid ${credColor}">
                   <i class="bi bi-globe"></i> <span style="font-weight:700;">${j.source_domain}</span>
                   <span style="color:${credColor}; margin-left:8px;">| Reliability: ${credScore}/10</span>
@@ -595,7 +595,7 @@
 
           html += `
             <a href="${article.link}" target="_blank" rel="noopener noreferrer" class="news-item d-block p-3 mb-2 rounded text-decoration-none">
-              <h6 class="mb-1 text-light" style="line-height: 1.4;">${article.title}</h6>
+              <h6 class="mb-1 theme-text" style="line-height: 1.4;">${article.title}</h6>
               <div class="text-muted small"><i class="bi bi-clock me-1"></i>${dateStr}</div>
             </a>
           `;

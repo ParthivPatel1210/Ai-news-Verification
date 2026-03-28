@@ -371,88 +371,96 @@
       </div>
     </div>
 
-    <!-- Profile Settings -->
-    <div class="history-card" style="margin-bottom: 32px;">
-      <div class="history-head"
-        style="border-bottom: 1px solid var(--border-light); padding-bottom: 16px; margin-bottom: 20px;">
-        <div class="history-title"><i class="bi bi-person-badge me-2" style="color:#2dd4bf;"></i>Public Profile Settings
-        </div>
-      </div>
-      <form method="POST" action="/dashboard" class="row g-3">
-        <div class="col-md-2 text-center d-flex flex-column align-items-center justify-content-center">
-          <img src="{{ current_user.profile_picture }}" alt="Avatar" class="rounded-circle shadow"
-            style="width: 80px; height: 80px; object-fit: cover; border: 2px solid #10b981; background: #fff;">
-          <div class="small text-muted mt-2">Member since<br>{{ current_user.joined_date.strftime('%b %Y') }}</div>
-        </div>
-        <div class="col-md-10">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label text-muted small text-uppercase fw-bold" style="letter-spacing: 0.04em;">Avatar
-                URL</label>
-              <input type="url" name="profile_picture" class="form-control"
-                style="background: var(--bg-card); border: 1px solid var(--border-light); color: var(--text-primary); border-radius: 8px;"
-                value="{{ current_user.profile_picture }}">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label text-muted small text-uppercase fw-bold"
-                style="letter-spacing: 0.04em;">Location</label>
-              <input type="text" name="location" class="form-control"
-                style="background: var(--bg-card); border: 1px solid var(--border-light); color: var(--text-primary); border-radius: 8px;"
-                value="{{ current_user.location or '' }}" placeholder="City, Country">
-            </div>
-            <div class="col-12">
-              <label class="form-label text-muted small text-uppercase fw-bold"
-                style="letter-spacing: 0.04em;">Bio</label>
-              <textarea name="bio" class="form-control" rows="2"
-                style="background: var(--bg-card); border: 1px solid var(--border-light); color: var(--text-primary); border-radius: 8px;"
-                placeholder="Tell the global community about yourself...">{{ current_user.bio or '' }}</textarea>
-            </div>
-            <div class="col-12 text-end">
-              <button type="submit" class="dash-btn dash-btn-primary" style="padding: 10px 24px; border: none;"><i
-                  class="bi bi-save me-1"></i> Save Changes</button>
-            </div>
+    <!-- User Overview Panel -->
+    <div class="history-card mb-4" style="border-radius: 16px;">
+      <div class="d-flex align-items-center justify-content-between p-4 flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-4">
+          <img src="{{ current_user.profile_picture }}" alt="Avatar" class="rounded-circle shadow" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid var(--brand); background: var(--bg-card);">
+          <div>
+            <h4 class="mb-1 theme-text fw-bold">{{ current_user.username }}</h4>
+            <div class="theme-muted small mb-2"><i class="bi bi-geo-alt-fill me-1"></i>{{ current_user.location or 'Earth' }} &nbsp;&bull;&nbsp; <i class="bi bi-calendar-check me-1"></i>Joined {{ current_user.joined_date.strftime('%b %Y') }}</div>
+            <p class="theme-text mb-0" style="max-width: 600px; font-size: 0.95rem;">{{ current_user.bio or 'No bio provided yet.' }}</p>
           </div>
         </div>
-      </form>
+        <div class="d-flex flex-column gap-2 text-end">
+          <button class="dash-btn dash-btn-ghost btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#editProfileCollapse"><i class="bi bi-pencil-square me-1"></i> Edit Profile</button>
+          <button class="dash-btn dash-btn-ghost btn-sm" style="color: #f87171;" type="button" data-bs-toggle="collapse" data-bs-target="#accountSettingsCollapse"><i class="bi bi-gear-fill me-1"></i> Settings</button>
+        </div>
+      </div>
     </div>
 
-    <!-- Advanced Account Settings -->
-    <div class="history-card" style="margin-bottom: 32px;">
-      <div class="history-head" style="border-bottom: 1px solid var(--border-light); padding-bottom: 16px; margin-bottom: 20px;">
-        <div class="history-title"><i class="bi bi-shield-lock me-2" style="color:#f87171;"></i>Security & Preferences</div>
+    <!-- Collapsible Edit Profile Form -->
+    <div class="collapse mb-4" id="editProfileCollapse">
+      <div class="history-card">
+        <div class="history-head" style="border-bottom: 1px solid var(--border-light); padding-bottom: 16px; margin-bottom: 20px;">
+          <div class="history-title"><i class="bi bi-person-badge me-2" style="color:#2dd4bf;"></i>Edit Public Profile</div>
+        </div>
+        <form method="POST" action="/dashboard" class="row g-3">
+          <div class="col-md-2 text-center d-flex flex-column align-items-center justify-content-center">
+              <img src="{{ current_user.profile_picture }}" alt="Avatar" class="rounded-circle shadow" style="width: 80px; height: 80px; object-fit: cover; border: 2px solid #10b981; background: var(--bg-card);">
+          </div>
+          <div class="col-md-10">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label theme-muted small text-uppercase fw-bold" style="letter-spacing: 0.04em;">Avatar URL</label>
+                <input type="url" name="profile_picture" class="form-control theme-input" value="{{ current_user.profile_picture }}" style="border-radius: 8px;">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label theme-muted small text-uppercase fw-bold" style="letter-spacing: 0.04em;">Location</label>
+                <input type="text" name="location" class="form-control theme-input" value="{{ current_user.location or '' }}" placeholder="City, Country" style="border-radius: 8px;">
+              </div>
+              <div class="col-12">
+                <label class="form-label theme-muted small text-uppercase fw-bold" style="letter-spacing: 0.04em;">Bio</label>
+                <textarea name="bio" class="form-control theme-input" rows="2" placeholder="Tell the global community about yourself..." style="border-radius: 8px;">{{ current_user.bio or '' }}</textarea>
+              </div>
+              <div class="col-12 text-end">
+                <button type="submit" class="dash-btn dash-btn-primary" style="padding: 10px 24px; border: none;"><i class="bi bi-save me-1"></i> Save Changes</button>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
-      
-      <div class="row g-4">
-        <!-- Theme Selector -->
-        <div class="col-md-4">
-          <form method="POST" action="/settings/theme" class="p-3 rounded theme-card" style="height: 100%;">
-            <label class="form-label theme-muted small text-uppercase fw-bold"><i class="bi bi-moon-stars me-1"></i> Interface Theme</label>
-            <select name="theme" class="form-control mb-3 theme-input" style="border-radius: 8px; appearance: auto;">
-              <option value="dark" {% if current_user.theme_preference == 'dark' %}selected{% endif %}>Dark Mode (Default)</option>
-              <option value="light" {% if current_user.theme_preference == 'light' %}selected{% endif %}>Light Mode</option>
-            </select>
-            <button type="submit" class="dash-btn dash-btn-ghost w-100 mt-2" style="padding: 8px;"><i class="bi bi-palette me-1"></i> Apply Theme</button>
-          </form>
-        </div>
+    </div>
 
-        <!-- Change Username -->
-        <div class="col-md-4">
-          <form method="POST" action="/settings/username" class="p-3 rounded theme-card" style="height: 100%;">
-            <label class="form-label theme-muted small text-uppercase fw-bold"><i class="bi bi-person-fill-gear me-1"></i> Change Username</label>
-            <input type="text" name="new_username" class="form-control mb-2 theme-input" required placeholder="New Username" style="font-size: 0.9rem; border-radius: 8px;">
-            <input type="password" name="password" class="form-control mb-3 theme-input" required placeholder="Current Password" style="font-size: 0.9rem; border-radius: 8px;">
-            <button type="submit" class="dash-btn dash-btn-ghost w-100" style="padding: 8px; color:#34d399;"><i class="bi bi-arrow-repeat me-1"></i> Update Username</button>
-          </form>
+    <!-- Collapsible Advanced Account Settings -->
+    <div class="collapse mb-4" id="accountSettingsCollapse">
+      <div class="history-card">
+        <div class="history-head" style="border-bottom: 1px solid var(--border-light); padding-bottom: 16px; margin-bottom: 20px;">
+          <div class="history-title"><i class="bi bi-shield-lock me-2" style="color:#f87171;"></i>Security & Preferences</div>
         </div>
+        
+        <div class="row g-4">
+          <!-- Theme Selector -->
+          <div class="col-md-4">
+            <form method="POST" action="/settings/theme" class="p-3 rounded theme-card" style="height: 100%;">
+              <label class="form-label theme-muted small text-uppercase fw-bold"><i class="bi bi-moon-stars me-1"></i> Interface Theme</label>
+              <select name="theme" class="form-control mb-3 theme-input" style="border-radius: 8px; appearance: auto;">
+                <option value="dark" {% if current_user.theme_preference == 'dark' %}selected{% endif %}>Dark Mode (Default)</option>
+                <option value="light" {% if current_user.theme_preference == 'light' %}selected{% endif %}>Light Mode</option>
+              </select>
+              <button type="submit" class="dash-btn dash-btn-ghost w-100 mt-2" style="padding: 8px;"><i class="bi bi-palette me-1"></i> Apply Theme</button>
+            </form>
+          </div>
 
-        <!-- Change Password -->
-        <div class="col-md-4">
-          <form method="POST" action="/settings/password" class="p-3 rounded theme-card" style="height: 100%;">
-            <label class="form-label theme-muted small text-uppercase fw-bold"><i class="bi bi-key me-1"></i> Rotate Password</label>
-            <input type="password" name="old_password" class="form-control mb-2 theme-input" required placeholder="Current Password" style="font-size: 0.9rem; border-radius: 8px;">
-            <input type="password" name="new_password" class="form-control mb-3 theme-input" required placeholder="New Password" style="font-size: 0.9rem; border-radius: 8px;">
-            <button type="submit" class="dash-btn dash-btn-ghost w-100" style="padding: 8px; color:#f87171;"><i class="bi bi-shield-lock me-1"></i> Update Password</button>
-          </form>
+          <!-- Change Username -->
+          <div class="col-md-4">
+            <form method="POST" action="/settings/username" class="p-3 rounded theme-card" style="height: 100%;">
+              <label class="form-label theme-muted small text-uppercase fw-bold"><i class="bi bi-person-fill-gear me-1"></i> Change Username</label>
+              <input type="text" name="new_username" class="form-control mb-2 theme-input" required placeholder="New Username" style="font-size: 0.9rem; border-radius: 8px;">
+              <input type="password" name="password" class="form-control mb-3 theme-input" required placeholder="Current Password" style="font-size: 0.9rem; border-radius: 8px;">
+              <button type="submit" class="dash-btn dash-btn-ghost w-100" style="padding: 8px; color:#34d399;"><i class="bi bi-arrow-repeat me-1"></i> Update Username</button>
+            </form>
+          </div>
+
+          <!-- Change Password -->
+          <div class="col-md-4">
+            <form method="POST" action="/settings/password" class="p-3 rounded theme-card" style="height: 100%;">
+              <label class="form-label theme-muted small text-uppercase fw-bold"><i class="bi bi-key me-1"></i> Rotate Password</label>
+              <input type="password" name="old_password" class="form-control mb-2 theme-input" required placeholder="Current Password" style="font-size: 0.9rem; border-radius: 8px;">
+              <input type="password" name="new_password" class="form-control mb-3 theme-input" required placeholder="New Password" style="font-size: 0.9rem; border-radius: 8px;">
+              <button type="submit" class="dash-btn dash-btn-ghost w-100" style="padding: 8px; color:#f87171;"><i class="bi bi-shield-lock me-1"></i> Update Password</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>

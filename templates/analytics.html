@@ -130,7 +130,7 @@
 
         <!-- Community Feed -->
         <div class="community-feed">
-            <h4 class="mb-4 text-light"><i class="bi bi-people"></i> Top Community Verified Alerts</h4>
+            <h4 class="mb-4 theme-text"><i class="bi bi-people"></i> Top Community Verified Alerts</h4>
 
             {% if trending|length > 0 %}
             {% for item in trending %}
@@ -150,7 +150,7 @@
                         <i class="bi bi-arrow-down-circle-fill" style="color:#ef4444;"></i> {{ item.downvotes }}
                     </div>
                 </div>
-                <p class="text-light mb-1" style="font-size: 0.95rem;">
+                <p class="theme-text mb-1" style="font-size: 0.95rem;">
                     {% if item.url %}
                     <a href="{{ item.url }}" target="_blank"
                         style="color: var(--text-muted); text-decoration: none;"><strong>[Source Link]</strong></a>
