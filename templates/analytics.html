@@ -8,10 +8,7 @@
     .analytics-shell {
         min-height: calc(100vh - 64px);
         padding: 60px 24px;
-        background:
-            radial-gradient(ellipse at 10% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
-            radial-gradient(ellipse at 90% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
-            #020617;
+        background: var(--hero-bg);
     }
 
     .analytics-header {
@@ -22,7 +19,7 @@
     .analytics-header h1 {
         font-size: 2.5rem;
         font-weight: 800;
-        color: #f8fafc;
+        color: var(--text-primary);
     }
 
     .highlight-teal {
@@ -32,8 +29,8 @@
     }
 
     .stat-card {
-        background: rgba(15, 23, 42, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
         border-radius: 20px;
         padding: 24px;
         backdrop-filter: blur(20px);
@@ -50,7 +47,7 @@
     .stat-value {
         font-size: 3rem;
         font-weight: 800;
-        color: #f8fafc;
+        color: var(--text-primary);
         margin-top: 10px;
     }
 
@@ -63,8 +60,8 @@
     }
 
     .community-feed {
-        background: rgba(15, 23, 42, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
         border-radius: 20px;
         padding: 30px;
         backdrop-filter: blur(20px);
@@ -96,7 +93,7 @@
 
 {% block content %}
 <div class="analytics-shell">
-    <div class="container" style="max-width: 1000px;">
+    <div class="container-fluid" style="max-width: 95% !important; margin: 0 auto;">
 
         <div class="analytics-header">
             <h6 class="text-uppercase mb-2" style="letter-spacing: 2px; color: #34d399;">System Health & Data</h6>
