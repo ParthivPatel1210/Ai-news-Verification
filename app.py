@@ -462,6 +462,8 @@ def dashboard():
                 img.save(buffered, format="JPEG", quality=85)
                 img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
                 current_user.avatar_base64 = img_str
+                # Clear profile_picture URL since local file was uploaded
+                current_user.profile_picture = None
             except Exception as e:
                 flash(f"Error processing image: {str(e)}")
 
@@ -476,8 +478,12 @@ def dashboard():
             except ValueError:
                 pass
                 
-        if profile_picture:
-            current_user.profile_picture = profile_picture
+        if profile_picture is not None:
+            # If the user submitted an empty URL box, switch to UI Avatars default
+            if profile_picture.strip() == '':
+                current_user.profile_picture = f'https://ui-avatars.com/api/?name={current_user.username}&background=10b981&color=fff'
+            else:
+                current_user.profile_picture = profile_picture
             
         db.session.commit()
         flash('Profile settings updated successfully!', 'success')
