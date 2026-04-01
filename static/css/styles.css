@@ -451,7 +451,7 @@ textarea.form-control {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .donut-text .percent {

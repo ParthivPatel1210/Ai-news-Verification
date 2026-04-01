@@ -488,7 +488,7 @@
                       <div class="label">Confidence</div>
                     </div>
                   </div>
-                  <h4 class="mt-4 animate-pop ${isFake ? 'text-danger' : 'text-success'}" style="font-weight:800; letter-spacing:1px; font-size: 1.8rem; opacity: 0;">
+                  <h4 class="mt-4 animate-pop ${isFake ? 'text-danger' : 'text-success'}" style="font-weight:800; letter-spacing:1px; font-size: 1.8rem;">
                     <i class="bi ${isFake ? 'bi-x-octagon-fill' : 'bi-patch-check-fill'}" style="font-size: 2.5rem; display: block; margin-bottom: 8px;"></i> ${j.prediction}
                   </h4>
                 </div>
@@ -526,7 +526,7 @@
         // Add AI Explanation
         if (j.explanation) {
           htmlContent += `
-              <div class="explanation-box ${isFake ? 'fake-box' : ''} mt-3 animate-pop" style="animation-delay: 0.2s; opacity: 0;">
+              <div class="explanation-box ${isFake ? 'fake-box' : ''} mt-3 animate-pop" style="animation-delay: 0.2s;">
                 <h6 style="color:#f8fafc; font-weight:700;"><i class="bi bi-robot"></i> AI Reasoning Panel</h6>
                 <p class="mb-1" style="font-size:0.95rem;">${j.explanation}</p>
                 ${j.suspicious_words && j.suspicious_words.length > 0 ? `<small class="text-muted mt-2 d-block"><strong>Trigger Flags Detected:</strong> ${j.suspicious_words.join(', ')}</small>` : ''}
@@ -536,12 +536,27 @@
 
         htmlContent += `</div></div>`; // Close row and col-8
 
+        // Related News Component for the Prediction Dashboard
+        if (j.prediction === 'REAL') {
+          // Escape quotes correctly using a safe string literal slice 
+          const cleanQuery = isUrlTab && j.scraped_text ? j.scraped_text : text;
+          const safeQuery = cleanQuery.replace(/"/g, '&quot;').replace(/'/g, '&#39;').substring(0, 100);
+          htmlContent += `
+            <div class="mt-4 pt-4 border-top border-secondary" style="border-color: rgba(255,255,255,0.05) !important;">
+                <button type="button" class="btn btn-outline-success w-100 load-related-dash-btn" style="border-radius: 12px; font-weight: 600;" data-query="${safeQuery}">
+                    <i class="bi bi-search-heart me-2"></i> Find Related Live Reports
+                </button>
+                <div id="related-dash-container" class="mt-3" style="display:none; transition: all 0.3s ease;"></div>
+            </div>
+          `;
+        }
+
         // Add Community Publish Button if prediction saved
         if (j.prediction_id) {
           htmlContent += `
-            <div class="mt-4 text-center pb-2 border-top border-secondary pt-4" style="border-color: rgba(255,255,255,0.05) !important;">
+            <div class="mt-4 text-center pb-2 pt-4">
               <form method="post" action="/publish/${j.prediction_id}">
-                <button type="submit" class="btn btn-outline-primary animate-pop" style="border-radius: 50px; padding: 12px 30px; font-weight: 600; animation-delay: 0.4s; opacity: 0; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);">
+                <button type="submit" class="btn btn-primary animate-pop" style="border-radius: 50px; padding: 12px 30px; font-weight: 600; animation-delay: 0.1s; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);">
                   <i class="bi bi-globe-americas me-2"></i> Publish to Community Feed
                 </button>
               </form>
@@ -591,6 +606,50 @@
       }
     } catch (err) {
       result.innerHTML = '<div class="alert alert-danger">Request failed.</div>';
+    }
+  });
+
+  // Event Delegation for the dynamically added Related News btn
+  document.addEventListener('click', async function(e) {
+    if (e.target && e.target.closest('.load-related-dash-btn')) {
+      const btn = e.target.closest('.load-related-dash-btn');
+      const query = btn.getAttribute('data-query');
+      const container = document.getElementById('related-dash-container');
+      
+      if (container.innerHTML !== '') {
+          container.style.display = container.style.display === 'none' ? 'block' : 'none';
+          return;
+      }
+      
+      container.style.display = 'block';
+      container.innerHTML = '<div class="text-muted small p-2" style="background: rgba(0,0,0,0.02); border-radius: 6px;"><div class="spinner-border spinner-border-sm me-2 text-primary" role="status"></div> Querying global news sources...</div>';
+      
+      try {
+          const res = await fetch('/api/related_news', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ query: query })
+          });
+          const data = await res.json();
+          
+          if (data.status === 'success' && data.articles.length > 0) {
+              let html = '<div class="p-3 rounded" style="background: rgba(16, 185, 129, 0.04); border: 1px solid rgba(16, 185, 129, 0.2);"><h6 class="theme-text mb-3" style="font-size: 0.9rem; font-weight: 700;"><i class="bi bi-search-heart me-2" style="color: #10b981;"></i> Live Journalistic Corroboration</h6>';
+              data.articles.forEach(art => {
+                  html += `
+                      <div class="mb-3 pb-2" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                          <a href="${art.href}" target="_blank" style="font-size: 0.9rem; font-weight: 600; color: #34d399; text-decoration: none; display: block; margin-bottom: 4px;">${art.title} <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.7rem;"></i></a>
+                          <p class="mb-0 text-muted" style="font-size: 0.8rem; line-height: 1.4;">${art.snippet}</p>
+                      </div>
+                  `;
+              });
+              html += '</div>';
+              container.innerHTML = html;
+          } else {
+              container.innerHTML = '<div class="alert alert-dark small mb-0 p-2" style="background: var(--bg-card); border: 1px solid var(--glass-border);"><i class="bi bi-info-circle me-1"></i> No directly correlating live articles found.</div>';
+          }
+      } catch (err) {
+          container.innerHTML = '<div class="text-danger small p-2"><i class="bi bi-x-circle me-1"></i> Error fetching related news.</div>';
+      }
     }
   });
 </script>
