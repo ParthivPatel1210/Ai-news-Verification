@@ -352,6 +352,7 @@ def predict():
             credibility = c_val
             credibility_reason = f"Source guessed from text match: {c_reason}"
 
+    prediction_id = None
     # Save history if user logged in
     try:
         if current_user and current_user.is_authenticated:
@@ -368,6 +369,7 @@ def predict():
             )
             db.session.add(p)
             db.session.commit()
+            prediction_id = p.id
     except Exception as e:
         print(f"DB Error: {e}")
         pass
@@ -381,7 +383,8 @@ def predict():
         'credibility_reason': credibility_reason,
         'explanation': explanation,
         'suspicious_words': suspicious_words.split(',') if suspicious_words else [],
-        'web_results': web_results
+        'web_results': web_results,
+        'prediction_id': prediction_id
     })
 
 
@@ -646,6 +649,30 @@ def get_ai_news():
 def get_world_news():
     url = "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en"
     return _fetch_google_rss(url, limit=10)
+
+@app.route('/api/related_news', methods=['POST'])
+def get_related_news():
+    data = request.get_json()
+    query = data.get('query', '')
+    if not query:
+        return jsonify({'error': 'No query provided'}), 400
+        
+    try:
+        # We will extract first ~10 words to make a robust search query
+        words = query.split()
+        search_query = ' '.join(words[:10]) + " news updates"
+        results = DDGS().text(search_query, max_results=3)
+        out = []
+        for r in results:
+            out.append({
+                'title': r.get('title', ''),
+                'href': r.get('href', ''),
+                'snippet': r.get('body', '')[:120] + '...'
+            })
+        return jsonify({'status': 'success', 'articles': out})
+    except Exception as e:
+        print(f"Related News Error: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 def _fetch_google_rss(url, limit=10):
     try:

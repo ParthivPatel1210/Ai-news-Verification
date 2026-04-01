@@ -488,7 +488,9 @@
                       <div class="label">Confidence</div>
                     </div>
                   </div>
-                  <h4 class="mt-3 ${isFake ? 'text-danger' : 'text-success'}" style="font-weight:800; letter-spacing:1px;"><i class="bi ${isFake ? 'bi-exclamation-triangle-fill' : 'bi-check-circle-fill'}"></i> ${j.prediction}</h4>
+                  <h4 class="mt-4 animate-pop ${isFake ? 'text-danger' : 'text-success'}" style="font-weight:800; letter-spacing:1px; font-size: 1.8rem; opacity: 0;">
+                    <i class="bi ${isFake ? 'bi-x-octagon-fill' : 'bi-patch-check-fill'}" style="font-size: 2.5rem; display: block; margin-bottom: 8px;"></i> ${j.prediction}
+                  </h4>
                 </div>
                 <div class="col-md-8 ps-md-4">
         `;
@@ -524,7 +526,7 @@
         // Add AI Explanation
         if (j.explanation) {
           htmlContent += `
-              <div class="explanation-box ${isFake ? 'fake-box' : ''} mt-3">
+              <div class="explanation-box ${isFake ? 'fake-box' : ''} mt-3 animate-pop" style="animation-delay: 0.2s; opacity: 0;">
                 <h6 style="color:#f8fafc; font-weight:700;"><i class="bi bi-robot"></i> AI Reasoning Panel</h6>
                 <p class="mb-1" style="font-size:0.95rem;">${j.explanation}</p>
                 ${j.suspicious_words && j.suspicious_words.length > 0 ? `<small class="text-muted mt-2 d-block"><strong>Trigger Flags Detected:</strong> ${j.suspicious_words.join(', ')}</small>` : ''}
@@ -533,6 +535,19 @@
         }
 
         htmlContent += `</div></div>`; // Close row and col-8
+
+        // Add Community Publish Button if prediction saved
+        if (j.prediction_id) {
+          htmlContent += `
+            <div class="mt-4 text-center pb-2 border-top border-secondary pt-4" style="border-color: rgba(255,255,255,0.05) !important;">
+              <form method="post" action="/publish/${j.prediction_id}">
+                <button type="submit" class="btn btn-outline-primary animate-pop" style="border-radius: 50px; padding: 12px 30px; font-weight: 600; animation-delay: 0.4s; opacity: 0; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);">
+                  <i class="bi bi-globe-americas me-2"></i> Publish to Community Feed
+                </button>
+              </form>
+            </div>
+          `;
+        }
 
         // Add Web Results section (Live DuckDuckGo Searches)
         if (j.web_results && j.web_results.length > 0) {

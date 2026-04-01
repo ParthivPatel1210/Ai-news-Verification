@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import SGDClassifier
 from sklearn.preprocessing import LabelEncoder
 import joblib
 
@@ -21,8 +21,8 @@ def main():
         return
 
     from sklearn.model_selection import train_test_split
-    # Drastically reduced feature space to prevent 512MB RAM Out-Of-Memory limit on Render Free Tier
-    vectorizer = TfidfVectorizer(max_features=10000, stop_words='english', ngram_range=(1, 1))
+    # Upgraded feature space with Bigrams for nuanced linguistic detection
+    vectorizer = TfidfVectorizer(max_features=12000, stop_words='english', ngram_range=(1, 2))
     print('Fitting vectorizer...')
     X = vectorizer.fit_transform(df['text'].astype(str))
     le = LabelEncoder()
@@ -30,8 +30,8 @@ def main():
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
-    print('Training Logistic Regression model...')
-    model = LogisticRegression(max_iter=2000, C=5.0)
+    print('Training Advanced SGD Classifier with Log Loss...')
+    model = SGDClassifier(loss='log_loss', max_iter=2500, penalty='l2', alpha=1e-4, random_state=42)
     model.fit(X_train, y_train)
 
     # Evaluate quickly

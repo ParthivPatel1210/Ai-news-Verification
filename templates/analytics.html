@@ -160,6 +160,16 @@
                     <i class="bi bi-robot"></i> {{ item.explanation }}
                 </div>
                 {% endif %}
+                
+                {% if item.prediction == 'REAL' %}
+                <div class="mt-3">
+                    <button class="btn btn-sm load-related-btn" data-query="{{ item.text[:80]|escape }}" data-target="related-{{ item.id }}" style="background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 600; border-radius: 8px;">
+                        <i class="bi bi-newspaper"></i> Find Related Live Reports
+                    </button>
+                </div>
+                <div id="related-{{ item.id }}" class="related-news-container mt-3" style="display: none; transition: all 0.3s ease;"></div>
+                {% endif %}
+                
             </div>
             {% endfor %}
             {% else %}
@@ -172,4 +182,52 @@
 
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.load-related-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+        const query = btn.getAttribute('data-query');
+        const targetId = btn.getAttribute('data-target');
+        const container = document.getElementById(targetId);
+        
+        // Toggle visibility if already loaded
+        if (container.innerHTML !== '') {
+            container.style.display = container.style.display === 'none' ? 'block' : 'none';
+            return;
+        }
+        
+        container.style.display = 'block';
+        container.innerHTML = '<div class="text-muted small p-2" style="background: rgba(255,255,255,0.02); border-radius: 6px;"><div class="spinner-border spinner-border-sm me-2 text-primary" role="status"></div> Querying global news sources...</div>';
+        
+        try {
+            const res = await fetch('/api/related_news', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query })
+            });
+            const data = await res.json();
+            
+            if (data.status === 'success' && data.articles.length > 0) {
+                let html = '<div class="p-3 rounded" style="background: rgba(16, 185, 129, 0.04); border: 1px solid rgba(16, 185, 129, 0.2);"><h6 class="theme-text mb-3" style="font-size: 0.9rem; font-weight: 700;"><i class="bi bi-search-heart me-2" style="color: #10b981;"></i> Live Journalistic Corroboration</h6>';
+                data.articles.forEach(art => {
+                    html += `
+                        <div class="mb-3 pb-2" style="border-bottom: 1px solid rgba(255,255,255,0.05); last-child: border-0;">
+                            <a href="${art.href}" target="_blank" style="font-size: 0.9rem; font-weight: 600; color: #34d399; text-decoration: none; display: block; margin-bottom: 4px;">${art.title} <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.7rem;"></i></a>
+                            <p class="mb-0 text-muted" style="font-size: 0.8rem; line-height: 1.4;">${art.snippet}</p>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div class="alert alert-dark small mb-0 p-2" style="background: var(--bg-card); border: 1px solid var(--glass-border);"><i class="bi bi-info-circle me-1"></i> No directly correlating live articles found.</div>';
+            }
+        } catch (err) {
+            container.innerHTML = '<div class="text-danger small p-2"><i class="bi bi-x-circle me-1"></i> Error fetching related news.</div>';
+        }
+    });
+});
+</script>
 {% endblock %}
