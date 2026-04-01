@@ -200,7 +200,11 @@ def search_web_verification(text):
     try:
         # Construct query from first few words to capture the core claim/headline
         words = text.split()
-        headline = ' '.join(words[:20])
+        if len(words) > 10:
+            headline = ' '.join(words[:10]) + " news"
+        else:
+            headline = ' '.join(words) + " news"
+            
         results = DDGS().text(headline, max_results=3)
         # Format results
         out = []
@@ -213,7 +217,7 @@ def search_web_verification(text):
         return out
     except Exception as e:
         print(f"Web Search Error: {e}")
-        return []
+        return None
 
 def extract_model_highlights(text, vectorizer, model, le, is_fake):
     try:
@@ -295,51 +299,65 @@ def predict():
 
     label = le.inverse_transform([pred_idx])[0]
     
-    # Advanced features
-    is_fake = (label.upper() == 'FAKE')
-    explanation, suspicious_words = generate_explanation_and_highlights(text, vectorizer, model, le, is_fake)
+    # Base ML Evaluation
+    ml_is_fake = (label.upper() == 'FAKE')
+    ml_real_prob = prob if not ml_is_fake else (1.0 - prob)
     
     # Live Web Search
     web_results = search_web_verification(text)
     
-    # Hybrid ML & Web Verification Ensemble for ALL inputs
-    if web_results:
-        avg_credibility = 0
-        valid_sources = 0
-        for res in web_results:
-            score, _ = get_credibility_score(res['href'])
-            if score >= 5.0:
+    web_score = 0.5
+    web_explanation = ""
+    
+    if web_results is not None:
+        if len(web_results) > 0:
+            valid_sources = 0
+            avg_credibility = 0
+            for res in web_results:
+                score, _ = get_credibility_score(res['href'])
                 avg_credibility += score
                 valid_sources += 1
                 
-        if valid_sources > 0:
-            avg_cred = avg_credibility / valid_sources
-            if avg_cred >= 7.0:
-                # Highly credible sources found -> Boost REAL prob
-                prob_real = 1.0 - prob if is_fake else prob
-                prob_fake = prob if is_fake else 1.0 - prob
-                prob_real = min(0.99, prob_real + 0.40)
-                prob_fake = 1.0 - prob_real
-                if prob_real > prob_fake:
-                    label = "REAL"
-                    prob = prob_real
-                    is_fake = False
-                    explanation += " NOTE: The AI cross-referenced live web sources. Several highly trusted publishers were found actively reporting this claim, verifying its authenticity and overriding initial ML skepticism."
+            if valid_sources > 0:
+                avg_cred = avg_credibility / valid_sources
+                if avg_cred >= 7.0:
+                    web_score = 0.95
+                    web_explanation = "We verified this claim against live data. It is currently being actively reported by highly credible journalistic sources."
+                elif avg_cred >= 5.0:
+                    web_score = 0.75
+                    web_explanation = "We verified this claim online. It is currently being mentioned by various sources across the web."
                 else:
-                    prob = prob_fake
+                    web_score = 0.35
+                    web_explanation = "While we found articles discussing this, they originated from historically unreliable or heavily biased sources, reducing credibility."
         else:
-            # 0 credible sources found -> Boost FAKE prob
-            prob_fake = prob if is_fake else 1.0 - prob
-            prob_real = 1.0 - prob_fake
-            prob_fake = min(0.99, prob_fake + 0.30)
-            prob_real = 1.0 - prob_fake
-            if prob_fake > prob_real:
-                label = "FAKE"
-                prob = prob_fake
-                is_fake = True
-                explanation += " NOTE: The AI cross-referenced live web sources for this claim. The complete lack of reputable reporting significantly boosted the FAKE probability."
-            else:
-                prob = prob_real
+            web_score = 0.15
+            web_explanation = "A live scan of the internet yielded zero results for this claim from any recognizable publisher, heavily increasing the likelihood that it is entirely fabricated."
+            
+        final_real_prob = (ml_real_prob * 0.40) + (web_score * 0.60)
+    else:
+        final_real_prob = ml_real_prob
+        web_explanation = "Due to network conditions, live web verification was unavailable. This prediction relies entirely on linguistics."
+        web_results = [] # ensure empty array rather than null for safety
+        
+    if final_real_prob > 0.5:
+        final_label = "REAL"
+        final_prob = final_real_prob
+        final_is_fake = False
+    else:
+        final_label = "FAKE"
+        final_prob = 1.0 - final_real_prob
+        final_is_fake = True
+        
+    # Generate Advanced feature explanations based on original ML thought
+    explanation, suspicious_words = generate_explanation_and_highlights(text, vectorizer, model, le, ml_is_fake)
+    
+    # Merge Explanations
+    explanation = f"<strong>🤖 ML Linguistic Filter:</strong> {explanation} <br><br><strong>🌐 Live Web Ensemble:</strong> {web_explanation}"
+    
+    # Update local variables for DB and JSON return
+    label = final_label
+    prob = final_prob
+    is_fake = final_is_fake
     
     # If using pure text input without URL, attempts to guess the source from the DDGS top search result!
     if not url and web_results and not source_domain:
