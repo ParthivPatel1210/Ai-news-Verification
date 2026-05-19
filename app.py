@@ -67,6 +67,12 @@ def load_artifacts():
     # Report BERT status
     if bert_predictor.is_available():
         print('BERT model ready  →  using BERT as primary classifier.')
+        try:
+            # Eagerly load the PyTorch model before Gunicorn forks workers.
+            # This prevents the 30s worker timeout on the first request and leverages Copy-On-Write for RAM.
+            bert_predictor._get_model()
+        except Exception as e:
+            print("WARNING: Failed to preload BERT:", e)
     else:
         print('BERT model not cached. Run `python train.py` to download it.')
         if model is None:
