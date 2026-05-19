@@ -22,6 +22,8 @@ class User(UserMixin, db.Model):
     country = db.Column(db.String(100), nullable=True)
     birthdate = db.Column(db.Date, nullable=True)
     gender = db.Column(db.String(20), nullable=True)
+    region = db.Column(db.String(100), nullable=True)
+    address = db.Column(db.Text, nullable=True)
 
     def get_id(self):
         return str(self.id)
@@ -46,6 +48,7 @@ class Prediction(db.Model):
     
     # Community Feature
     is_public = db.Column(db.Boolean, default=False)
+    region = db.Column(db.String(100), nullable=True)
 
     user = db.relationship('User', backref=db.backref('predictions', lazy='dynamic'))
 
@@ -55,3 +58,15 @@ class Vote(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     prediction_id = db.Column(db.Integer, db.ForeignKey('predictions.id'), nullable=False)
     vote_type = db.Column(db.Integer, nullable=False) # 1 for up, -1 for down
+
+class Proof(db.Model):
+    __tablename__ = 'proofs'
+    id = db.Column(db.Integer, primary_key=True)
+    prediction_id = db.Column(db.Integer, db.ForeignKey('predictions.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    proof_link = db.Column(db.String(1000), nullable=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('User', backref=db.backref('proofs', lazy='dynamic'))
+    prediction = db.relationship('Prediction', backref=db.backref('proofs', lazy='dynamic', cascade='all, delete-orphan'))

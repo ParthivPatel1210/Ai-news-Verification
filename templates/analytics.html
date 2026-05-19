@@ -157,7 +157,7 @@
                 {% if item.explanation %}
                 <div class="text-muted mt-2"
                     style="font-size: 0.85rem; border-top: 1px solid var(--border-light); padding-top:8px;">
-                    <i class="bi bi-robot"></i> {{ item.explanation }}
+                    <i class="bi bi-robot"></i> {{ item.explanation | safe }}
                 </div>
                 {% endif %}
                 

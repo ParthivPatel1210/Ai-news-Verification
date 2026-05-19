@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}News Evidence & Proofs — AI News Verifier{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5" style="max-width: 900px; margin: 0 auto;">
+    <div class="mb-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-sm" style="border-radius: 8px;">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Original News Context -->
+    <div class="card border-0 shadow-sm mb-5" style="border-radius: 16px; background: var(--glass-bg); border: 1px solid var(--glass-border) !important;">
+        <div class="card-body p-4 p-md-5">
+            <h5 class="fw-bold mb-3" style="color: var(--text-primary);">
+                <i class="bi bi-newspaper text-primary me-2"></i> Targeted News Claim
+            </h5>
+            <div class="p-4 mb-4 rounded" style="background: var(--bg-card-hover); border-left: 4px solid var(--accent-indigo); color: var(--text-primary); font-style: italic;">
+                "{{ prediction.text }}"
+            </div>
+            
+            <div class="d-flex flex-wrap gap-2 mb-2">
+                {% if prediction.prediction.strip().upper() == 'REAL' %}
+                <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; font-size: 0.9rem; padding: 8px 12px;">
+                    <i class="bi bi-check-circle-fill"></i> AI Verified: REAL ({{ "%.1f"|format(prediction.probability * 100) }}%)
+                </span>
+                {% else %}
+                <span class="badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171; font-size: 0.9rem; padding: 8px 12px;">
+                    <i class="bi bi-exclamation-triangle-fill"></i> AI Flagged: FAKE ({{ "%.1f"|format((1-prediction.probability) * 100) }}%)
+                </span>
+                {% endif %}
+                
+                {% if prediction.region %}
+                <span class="badge" style="background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-light); font-size: 0.9rem; padding: 8px 12px;">
+                    <i class="bi bi-geo-alt-fill text-info"></i> Region: {{ prediction.region }}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Proof Form -->
+    <div class="card border-0 shadow-sm mb-5" style="border-radius: 16px; background: var(--bg-surface); border: 1px solid var(--border-light) !important;">
+        <div class="card-body p-4 p-md-5">
+            <h5 class="fw-bold mb-4" style="color: var(--text-primary);">
+                <i class="bi bi-shield-plus text-success me-2"></i> Provide Evidence
+            </h5>
+            <p class="text-muted mb-4">Have you witnessed this locally? Do you have a reliable source that proves or disproves this claim? Add your evidence below.</p>
+            
+            <form method="POST" action="{{ url_for('prediction_proofs', pid=prediction.id) }}">
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-uppercase small" style="letter-spacing: 0.05em; color: var(--text-secondary);">Evidence Description *</label>
+                    <textarea name="content" class="form-control theme-input" rows="4" placeholder="Describe the proof or what you witnessed..." required style="border-radius: 12px;"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-uppercase small" style="letter-spacing: 0.05em; color: var(--text-secondary);">Supporting Link / URL (Optional)</label>
+                    <input type="url" name="proof_link" class="form-control theme-input" placeholder="https://..." style="border-radius: 12px;">
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success px-4 py-2" style="border-radius: 10px; font-weight: 600;">
+                        <i class="bi bi-cloud-arrow-up me-2"></i> Submit Proof
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Community Proofs List -->
+    <div class="mb-5">
+        <h5 class="fw-bold mb-4" style="color: var(--text-primary);">
+            <i class="bi bi-people text-info me-2"></i> Community Evidence ({{ proofs|length }})
+        </h5>
+        
+        {% if proofs|length > 0 %}
+        <div class="d-flex flex-column gap-4">
+            {% for proof in proofs %}
+            <div class="card border-0" style="border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-light) !important;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <img src="{% if proof.user.avatar_base64 %}data:image/jpeg;base64,{{ proof.user.avatar_base64 }}{% else %}{{ proof.user.profile_picture }}{% endif %}" alt="Avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid var(--accent-cyan);">
+                            <div>
+                                <div class="fw-bold" style="color: var(--text-primary);">{{ proof.user.username }}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">{{ proof.timestamp.strftime('%B %d, %Y at %H:%M') }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 rounded mb-3" style="background: var(--bg-card-hover); color: var(--text-primary); font-size: 0.95rem;">
+                        {{ proof.content }}
+                    </div>
+                    
+                    {% if proof.proof_link %}
+                    <div>
+                        <a href="{{ proof.proof_link }}" target="_blank" class="btn btn-sm btn-outline-info" style="border-radius: 8px;">
+                            <i class="bi bi-link-45deg me-1"></i> View External Proof
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5 rounded" style="background: var(--bg-card); border: 1px dashed var(--border-light);">
+            <i class="bi bi-inbox text-muted mb-3" style="font-size: 2.5rem;"></i>
+            <h6 class="text-muted">No evidence submitted yet.</h6>
+            <p class="text-muted small mb-0">Be the first to provide context for this news.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

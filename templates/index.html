@@ -1,281 +1,288 @@
 {% extends 'base.html' %}
-
-{% block title %}Home — AI News Verification{% endblock %}
+{% block title %}Home — AI NewsVerifier{% endblock %}
 
 {% block content %}
+
+<!-- ══════════════════════════════════════════════════════
+     HERO SECTION
+══════════════════════════════════════════════════════ -->
 <div class="hero-shell">
+  <!-- Aurora orbs -->
+  <div class="aurora-orb aurora-orb-1"></div>
+  <div class="aurora-orb aurora-orb-2"></div>
+  <div class="aurora-orb aurora-orb-3"></div>
+
+  <!-- Grid overlay -->
   <div class="grid-overlay"></div>
 
   <!-- Floating particles -->
-  <div class="floating-particle" style="top: 12%; left: 5%;"></div>
-  <div class="floating-particle" style="top: 26%; right: 7%; animation-delay: 0.7s;"></div>
-  <div class="floating-particle" style="bottom: 22%; left: 8%; animation-delay: 1.1s;"></div>
-  <div class="floating-particle" style="bottom: 10%; right: 4%; animation-delay: 1.7s;"></div>
+  <div class="floating-particle" style="top:12%;left:5%;"></div>
+  <div class="floating-particle" style="top:28%;right:7%;animation-delay:0.8s;background:#6366f1;"></div>
+  <div class="floating-particle" style="bottom:22%;left:8%;animation-delay:1.2s;"></div>
+  <div class="floating-particle" style="bottom:12%;right:5%;animation-delay:1.8s;background:#8b5cf6;"></div>
 
-  <!-- Cartoon floating newspapers drawn with CSS -->
+  <!-- Newspaper decorations -->
   <div class="newspaper newspaper--tl">
     <div class="newspaper-title">NEWS</div>
     <div class="newspaper-subtitle">AI FACT DESK</div>
     <div class="newspaper-body">
-      <div class="newspaper-lines">
-        <span></span><span></span><span></span><span></span><span></span>
-      </div>
+      <div class="newspaper-lines"><span></span><span></span><span></span><span></span><span></span></div>
       <div class="newspaper-box"></div>
-      <div class="newspaper-icon">
-        <i class="bi bi-search"></i>
-      </div>
+      <div class="newspaper-icon"><i class="bi bi-search"></i></div>
     </div>
   </div>
-
   <div class="newspaper newspaper--br">
     <div class="newspaper-title">VERIFY</div>
     <div class="newspaper-subtitle">BEFORE YOU SHARE</div>
     <div class="newspaper-body">
-      <div class="newspaper-lines">
-        <span></span><span></span><span></span><span></span>
-      </div>
+      <div class="newspaper-lines"><span></span><span></span><span></span><span></span></div>
       <div class="newspaper-box"></div>
-      <div class="newspaper-icon">
-        <i class="bi bi-search-heart"></i>
-      </div>
+      <div class="newspaper-icon"><i class="bi bi-search-heart"></i></div>
     </div>
   </div>
 
-  <div class="hero-shell-inner py-4">
+  <!-- Hero Content -->
+  <div class="hero-shell-inner">
     <div class="row gx-4 align-items-start">
+
+      <!-- ── MAIN COLUMN ── -->
       <div class="col-main">
         <div class="glass-card p-4 p-md-5 h-100" style="display:flex;flex-direction:column;">
-          <div class="mb-4 text-center">
-            <h1 class="page-heading mt-1 mb-2 theme-text" style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 3rem; background: linear-gradient(135deg, var(--text-primary) 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Is this headline trustworthy?</h1>
-            <p class="mb-0 theme-text opacity-75 mx-auto" style="max-width: 600px; font-size: 1.1rem;">
-              Paste a news article and our model will analyse its language to highlight whether it
-              looks more <strong>real</strong> or <strong>fake</strong>. Use it as a second set of eyes before you
-              share.
+          <!-- Headline -->
+          <div class="mb-5 text-center">
+            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);border-radius:50px;padding:6px 18px;font-size:0.8rem;font-weight:600;color:var(--accent-indigo);margin-bottom:24px;">
+              <i class="bi bi-stars"></i> AI-Powered Verification
+            </div>
+            <h1 class="hero-headline mb-3">Is this headline<br>trustworthy?</h1>
+            <p style="color:var(--text-muted);font-size:1.05rem;max-width:560px;margin:0 auto;line-height:1.7;">
+              Paste a news article and our NLP model will instantly analyse its linguistic patterns to predict whether it looks <strong style="color:#10b981;">real</strong> or <strong style="color:#ef4444;">fake</strong>.
             </p>
           </div>
+
+          <!-- Input form -->
           <form id="predictForm">
+            <!-- Tab toggle -->
             <div class="text-center mb-4">
-              <ul class="nav nav-pills d-inline-flex p-1" id="inputTab" role="tablist" style="background: rgba(0,0,0,0.05); border-radius: 50px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+              <ul class="nav nav-pills d-inline-flex p-1" id="inputTab" role="tablist"
+                style="background:rgba(255,255,255,0.04);border:1px solid var(--border-light);border-radius:12px;">
                 <li class="nav-item" role="presentation">
-                  <button class="nav-link active px-4 py-2 rounded-pill" id="text-tab" data-bs-toggle="pill" data-bs-target="#text-input-pane"
-                    type="button" role="tab" style="font-weight: 600; border: none;">Text Content</button>
+                  <button class="nav-link active px-4 py-2" id="text-tab"
+                    data-bs-toggle="pill" data-bs-target="#text-input-pane"
+                    type="button" role="tab" style="border-radius:9px;font-weight:600;font-size:0.875rem;">
+                    <i class="bi bi-file-text me-2"></i>Text Content
+                  </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                  <button class="nav-link px-4 py-2 rounded-pill" id="url-tab" data-bs-toggle="pill" data-bs-target="#url-input-pane"
-                    type="button" role="tab" style="font-weight: 600; border: none;">Article URL</button>
+                  <button class="nav-link px-4 py-2" id="url-tab"
+                    data-bs-toggle="pill" data-bs-target="#url-input-pane"
+                    type="button" role="tab" style="border-radius:9px;font-weight:600;font-size:0.875rem;">
+                    <i class="bi bi-link-45deg me-2"></i>Article URL
+                  </button>
                 </li>
               </ul>
             </div>
 
+            <!-- Tab panes -->
             <div class="tab-content mb-4" id="myTabContent">
-              <!-- Text Input Mode -->
+              <!-- Text mode -->
               <div class="tab-pane fade show active" id="text-input-pane" role="tabpanel" tabindex="0">
                 <textarea id="text" name="text" class="form-control"
-                  style="resize:vertical; min-height:300px; background: var(--bg-input); border: 2px solid var(--border-light); color: var(--text-primary); border-radius:16px; padding: 20px; font-size: 1.05rem; box-shadow: 0 4px 6px rgba(0,0,0,0.02);"
-                  placeholder="Paste headline and full article text here..."></textarea>
+                  placeholder="Paste the full headline and article text here for the most accurate result…"></textarea>
               </div>
-              
-              <!-- URL Input Mode -->
+              <!-- URL mode -->
               <div class="tab-pane fade" id="url-input-pane" role="tabpanel" tabindex="0">
-                <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px; background: var(--bg-card-hover); border: 2px dashed var(--border-light); border-radius: 16px; padding: 40px 20px; text-align: center;">
-                  <div style="background: rgba(59, 130, 246, 0.1); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-                    <i class="bi bi-link-45deg" style="font-size: 2.5rem; color: #3b82f6;"></i>
+                <div class="d-flex flex-column align-items-center justify-content-center"
+                  style="min-height:320px;background:var(--bg-input);border:1.5px dashed var(--glass-border);border-radius:16px;padding:40px 20px;text-align:center;">
+                  <div style="width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(6,182,212,0.1));border:1px solid rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+                    <i class="bi bi-link-45deg" style="font-size:2rem;color:var(--accent-indigo);"></i>
                   </div>
-                  <h4 class="theme-text mb-3 fw-bold">Analyze via URL</h4>
-                  <input type="url" id="news-url" name="url" class="form-control text-center mx-auto mb-3"
-                    style="max-width: 600px; padding: 18px 24px; border-radius: 50px; border: 2px solid var(--border-light); font-size: 1.1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); background: var(--bg-input); color: var(--text-primary);"
+                  <h4 style="color:var(--text-primary);font-family:'Sora',sans-serif;font-weight:700;margin-bottom:12px;">Analyze via URL</h4>
+                  <input type="url" id="news-url" name="url"
+                    class="form-control text-center mx-auto mb-3"
+                    style="max-width:500px;padding:14px 24px;border-radius:12px;border:1.5px solid var(--border-light);font-size:1rem;background:var(--bg-input);color:var(--text-primary);"
                     placeholder="https://news.example.com/article">
-                  <div class="theme-muted small">
-                    <i class="bi bi-shield-check me-1"></i> We will instantly trace the origin and perform a language authenticity sweep.
+                  <div style="color:var(--text-muted);font-size:0.85rem;">
+                    <i class="bi bi-shield-check me-1" style="color:var(--accent-indigo);"></i>
+                    We will instantly trace the origin and perform a language authenticity sweep.
                   </div>
                 </div>
               </div>
             </div>
 
+            <!-- Action buttons -->
             <div class="d-flex justify-content-center gap-3">
-              <button class="btn btn-primary" type="submit" style="padding: 12px 32px; border-radius: 50px; font-weight: 600; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(11, 127, 171, 0.3);">
-                <i class="bi bi-magic me-2"></i> Analyze Article
+              <button class="btn-verify" type="submit" id="verifyBtn">
+                <i class="bi bi-magic"></i> Analyze Article
               </button>
-              <button id="clearBtn" type="button" class="btn btn-outline-secondary" style="padding: 12px 24px; border-radius: 50px; font-weight: 600;">
+              <button id="clearBtn" type="button"
+                style="padding:13px 22px;border-radius:12px;background:var(--bg-card);border:1.5px solid var(--border-light);color:var(--text-muted);font-weight:600;font-size:0.95rem;cursor:pointer;transition:all 0.2s;">
                 <i class="bi bi-x-circle me-1"></i> Clear
               </button>
             </div>
           </form>
+
+          <!-- Result area -->
           <div id="result" class="mt-4"></div>
         </div>
 
-        <!-- Latest News Section -->
-        <div class="glass-card mt-4 p-4 p-md-5" style="display:flex; flex-direction:column;">
-          <div class="history-card" style="height: 100%;">
-            <div class="history-head mb-4 border-bottom pb-3" style="border-color: var(--border-light) !important;">
-              <div class="history-title" style="font-size: 1.25rem;">
-                <span><i class="bi bi-robot me-2" style="color: #10b981;"></i>Latest AI News</span>
-              </div>
+        <!-- ── LATEST AI NEWS ── -->
+        <div class="glass-card mt-4 p-4 p-md-5 reveal">
+          <div class="history-head mb-4 pb-3" style="border-bottom:1px solid var(--border-light);padding:0 0 16px 0;">
+            <div class="history-title">
+              <i class="bi bi-robot me-2" style="color:var(--accent-indigo);"></i>Latest AI News
             </div>
-            <div id="ai-news-container" class="news-list" style="max-height: 400px; overflow-y: auto;">
-              <div class="text-center text-muted py-4" id="ai-news-placeholder">
-                Fetching latest AI developments...
-              </div>
+          </div>
+          <div id="ai-news-container" class="news-list" style="max-height:380px;overflow-y:auto;">
+            <div class="text-center py-4" style="color:var(--text-muted);">
+              <div class="spinner-border spinner-border-sm me-2" role="status" style="color:var(--accent-indigo);"></div>
+              Fetching latest AI developments…
             </div>
           </div>
         </div>
       </div>
 
+      <!-- ── SIDE COLUMN ── -->
       <div class="col-side d-flex mt-4 mt-md-0">
         <div class="glass-card p-4 flex-fill">
-          <h6 class="text-uppercase mb-1 theme-muted" style="letter-spacing:0.16em; font-size:0.7rem;">
-            Editor’s note
-          </h6>
-          <h5 class="mb-2 theme-text" style="font-family:'Outfit',system-ui,sans-serif;">
-            Verify before you share.
-          </h5>
-          <p class="mb-3 theme-text opacity-75">
-            Treat this page like a fast triage tool. It won’t replace careful reading,
-            but it can surface suspicious patterns across breaking stories.
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+            <i class="bi bi-info-circle" style="color:var(--accent-indigo);"></i>
+          </div>
+          <h5 style="font-family:'Sora',sans-serif;font-weight:700;color:var(--text-primary);margin-bottom:10px;">Verify before you share.</h5>
+          <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;margin-bottom:18px;">
+            Treat this page like a fast triage tool. It won't replace careful reading, but it can surface suspicious patterns across breaking stories.
           </p>
-          <p class="mb-3">
-            <a href="/signup" class="btn btn-sm btn-outline-primary">
-              <i class="bi bi-person-plus"></i> Create account to save checks
-            </a>
-          </p>
-          <hr class="border-secondary" />
-          <h6 class="mb-2 theme-text opacity-75">How to get reliable scores</h6>
-          <ul class="mb-0 theme-muted">
-            <li>Include the <strong>headline and full body</strong> of the article.</li>
-            <li>Pay attention to confidence — <strong>around 50%</strong> means the model is unsure.</li>
-            <li>Always cross‑check results with trusted newsrooms and fact‑checkers.</li>
+          <a href="/signup" class="d-flex align-items-center gap-2"
+            style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);border-radius:10px;padding:11px 16px;color:var(--accent-indigo);font-weight:600;font-size:0.875rem;text-decoration:none;transition:all 0.2s;margin-bottom:20px;">
+            <i class="bi bi-person-plus"></i> Create account to save checks
+          </a>
+          <hr style="border-color:var(--border-light);" />
+          <h6 style="color:var(--text-primary);font-weight:700;font-size:0.85rem;margin-bottom:12px;">How to get reliable scores</h6>
+          <ul style="color:var(--text-muted);font-size:0.85rem;line-height:1.8;padding-left:18px;">
+            <li>Include the <strong style="color:var(--text-secondary);">headline and full body</strong> of the article.</li>
+            <li>Around <strong style="color:var(--text-secondary);">50%</strong> means the model is uncertain.</li>
+            <li>Always cross‑check with trusted newsrooms.</li>
           </ul>
         </div>
       </div>
+
     </div>
   </div>
 </div>
 
-<!-- Global Impact News Horizontal Carousel -->
-<section style="background: var(--bg-card); border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); padding: 40px 0; overflow: hidden;">
+<!-- ══════════════════════════════════════════════════════
+     WORLD NEWS MARQUEE
+══════════════════════════════════════════════════════ -->
+<section style="background:var(--bg-surface);border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light);padding:48px 0;overflow:hidden;">
   <div class="container-fluid container-inner">
     <div class="d-flex align-items-center mb-4 px-3">
-      <h3 class="theme-text fw-bold mb-0" style="font-family:'Outfit', sans-serif;"><i class="bi bi-globe-americas me-2" style="color: #ef4444;"></i>World Impact News</h3>
-      <div class="ms-auto theme-muted small text-uppercase fw-bold" style="letter-spacing: 1px;">Live Coverage</div>
+      <h3 style="font-family:'Sora',sans-serif;font-weight:800;color:var(--text-primary);margin:0;font-size:1.4rem;">
+        <i class="bi bi-globe-americas me-2" style="color:#ef4444;"></i>World Impact News
+      </h3>
+      <span class="ms-auto" style="font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;font-weight:600;">Live Coverage</span>
     </div>
-    
     <div class="thick-marquee-wrapper" id="world-news-container">
-      <div class="text-muted w-100 text-center py-4">Loading top global stories...</div>
+      <div style="color:var(--text-muted);text-align:center;width:100%;padding:20px 0;">
+        <div class="spinner-border spinner-border-sm me-2" role="status" style="color:var(--accent-cyan);"></div>
+        Loading top global stories…
+      </div>
     </div>
   </div>
 </section>
 
-<!-- How It Works Section -->
+<!-- ══════════════════════════════════════════════════════
+     HOW IT WORKS
+══════════════════════════════════════════════════════ -->
 <section class="section-padding">
   <div class="container container-inner">
-    <h2 class="section-title">How It Works</h2>
-    <p class="section-subtitle">Instantly verify news articles in three simple steps.</p>
+    <h2 class="section-title reveal">How It Works</h2>
+    <p class="section-subtitle reveal reveal-delay-1">Instantly verify news articles in three simple steps.</p>
 
     <div class="row g-4 mt-2">
-      <div class="col-md-4">
+      <div class="col-md-4 reveal reveal-delay-1">
         <div class="step-card">
           <div class="step-number">1</div>
           <h3 class="step-title">Paste Article</h3>
-          <p class="step-desc">Copy the headline and full body text of the article you want to verify and paste it into
-            our tool.</p>
+          <p class="step-desc">Copy the headline and full body text of the article you want to verify and paste it into our tool.</p>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4 reveal reveal-delay-2">
         <div class="step-card">
           <div class="step-number">2</div>
           <h3 class="step-title">AI Analysis</h3>
-          <p class="step-desc">Our advanced NLP model analyzes linguistic patterns, sentiment, and semantic structures
-            in real-time.</p>
+          <p class="step-desc">Our advanced NLP model analyses linguistic patterns, sentiment, and semantic structures in real-time.</p>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4 reveal reveal-delay-3">
         <div class="step-card">
           <div class="step-number">3</div>
           <h3 class="step-title">Review Results</h3>
-          <p class="step-desc">Get an instant probability score indicating whether the article resembles legitimate news
-            or known fakes.</p>
+          <p class="step-desc">Get an instant probability score showing whether the article resembles legitimate news or known fakes.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Features Section -->
-<section class="section-padding" style="background: var(--bg-card);">
+<!-- ══════════════════════════════════════════════════════
+     FEATURES
+══════════════════════════════════════════════════════ -->
+<section class="section-padding" style="background:var(--bg-surface);">
   <div class="container container-inner">
-    <h2 class="section-title">Why Choose AI NewsVerifier?</h2>
-    <p class="section-subtitle">Built with cutting-edge technology to provide rapid, reliable insights.</p>
+    <h2 class="section-title reveal">Why Choose AI NewsVerifier?</h2>
+    <p class="section-subtitle reveal reveal-delay-1">Built with cutting-edge technology to provide rapid, reliable insights.</p>
 
     <div class="row g-4 mt-2">
-      <div class="col-lg-4 col-md-6">
+      <div class="col-lg-4 col-md-6 reveal reveal-delay-1">
         <div class="feature-card">
           <div class="feature-card-content">
-            <div class="feature-icon">
-              <i class="bi bi-robot"></i>
-            </div>
+            <div class="feature-icon"><i class="bi bi-robot"></i></div>
             <h3 class="feature-title">Advanced NLP Models</h3>
-            <p class="feature-desc">Powered by state-of-the-art machine learning algorithms trained on tens of thousands
-              of real and fake news articles to detect subtle linguistic cues.</p>
+            <p class="feature-desc">Powered by state-of-the-art machine learning trained on tens of thousands of real and fake news articles to detect subtle linguistic cues.</p>
           </div>
         </div>
       </div>
-      <div class="col-lg-4 col-md-6">
+      <div class="col-lg-4 col-md-6 reveal reveal-delay-2">
         <div class="feature-card">
           <div class="feature-card-content">
-            <div class="feature-icon">
-              <i class="bi bi-lightning-charge"></i>
-            </div>
+            <div class="feature-icon"><i class="bi bi-lightning-charge"></i></div>
             <h3 class="feature-title">Lightning Fast</h3>
-            <p class="feature-desc">Get your verification results in milliseconds. Perfect for fast-paced news consumers
-              and journalists who need answers immediately.</p>
+            <p class="feature-desc">Get your verification results in milliseconds. Perfect for fast-paced news consumers and journalists who need answers immediately.</p>
           </div>
         </div>
       </div>
-      <div class="col-lg-4 col-md-6">
+      <div class="col-lg-4 col-md-6 reveal reveal-delay-3">
         <div class="feature-card">
           <div class="feature-card-content">
-            <div class="feature-icon">
-              <i class="bi bi-clock-history"></i>
-            </div>
+            <div class="feature-icon"><i class="bi bi-clock-history"></i></div>
             <h3 class="feature-title">History Tracking</h3>
-            <p class="feature-desc">Create a free account to save your prediction history. Track the articles you've
-              verified over time directly from your personal dashboard.</p>
+            <p class="feature-desc">Create a free account to save your prediction history. Track all articles you've verified over time from your personal dashboard.</p>
           </div>
         </div>
       </div>
-      <div class="col-lg-4 col-md-6">
+      <div class="col-lg-4 col-md-6 reveal reveal-delay-1">
         <div class="feature-card">
           <div class="feature-card-content">
-            <div class="feature-icon">
-              <i class="bi bi-shield-check"></i>
-            </div>
+            <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
             <h3 class="feature-title">Privacy Focused</h3>
-            <p class="feature-desc">We respect your privacy. All verifications are done securely, and your data is never
-              sold to third parties or used for external advertising.</p>
+            <p class="feature-desc">We respect your privacy. All verifications are done securely, and your data is never sold to third parties or used for advertising.</p>
           </div>
         </div>
       </div>
-      <div class="col-lg-4 col-md-6">
+      <div class="col-lg-4 col-md-6 reveal reveal-delay-2">
         <div class="feature-card">
           <div class="feature-card-content">
-            <div class="feature-icon">
-              <i class="bi bi-newspaper"></i>
-            </div>
+            <div class="feature-icon"><i class="bi bi-newspaper"></i></div>
             <h3 class="feature-title">Live AI News</h3>
-            <p class="feature-desc">Stay updated with the latest developments in Artificial Intelligence with our live
-              news feed directly on the dashboard.</p>
+            <p class="feature-desc">Stay updated with the latest developments in Artificial Intelligence with our live news feed directly on the dashboard.</p>
           </div>
         </div>
       </div>
-      <div class="col-lg-4 col-md-6">
+      <div class="col-lg-4 col-md-6 reveal reveal-delay-3">
         <div class="feature-card">
           <div class="feature-card-content">
-            <div class="feature-icon">
-              <i class="bi bi-phone"></i>
-            </div>
+            <div class="feature-icon"><i class="bi bi-phone"></i></div>
             <h3 class="feature-title">Fully Responsive</h3>
-            <p class="feature-desc">Verify articles on the go. Our platform is perfectly optimized for desktop, tablet,
-              and mobile devices.</p>
+            <p class="feature-desc">Verify articles on the go. Our platform is perfectly optimized for desktop, tablet, and all mobile devices.</p>
           </div>
         </div>
       </div>
@@ -283,112 +290,91 @@
   </div>
 </section>
 
-<!-- FAQ Section -->
+<!-- ══════════════════════════════════════════════════════
+     FAQ
+══════════════════════════════════════════════════════ -->
 <section class="section-padding">
-  <div class="container container-inner" style="max-width: 800px;">
-    <h2 class="section-title">Frequently Asked Questions</h2>
-    <p class="section-subtitle">Got questions? We've got answers.</p>
+  <div class="container container-inner" style="max-width:800px;">
+    <h2 class="section-title reveal">Frequently Asked Questions</h2>
+    <p class="section-subtitle reveal reveal-delay-1">Got questions? We've got answers.</p>
 
-    <div class="accordion custom-accordion mt-5" id="faqAccordion">
+    <div class="accordion custom-accordion mt-4 reveal" id="faqAccordion">
       <div class="accordion-item">
         <h2 class="accordion-header" id="headingOne">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-            aria-expanded="true" aria-controls="collapseOne">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true">
             Is this tool 100% accurate?
           </button>
         </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-          data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            No AI tool is 100% accurate. Our model analyzes linguistic patterns and vocabulary typically found in fake
-            news. It serves as a helpful "second set of eyes" to triage suspicious articles, but you should always
-            cross-reference with established fact-checkers like Snopes, Reuters, or AP News.
-          </div>
+        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">No AI tool is 100% accurate. Our model analyses linguistic patterns and vocabulary typically found in fake news. It serves as a helpful "second set of eyes" to triage suspicious articles, but always cross-reference with established fact-checkers like Snopes, Reuters, or AP News.</div>
         </div>
       </div>
       <div class="accordion-item">
         <h2 class="accordion-header" id="headingTwo">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
             Does it verify the facts in the article?
           </button>
         </h2>
-        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-          data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            This specific model <strong>does not</strong> perform live fact-checking or web searches to verify claims.
-            Instead, it looks at <em>how</em> the article is written. Fake news often uses sensationalist language,
-            extreme emotional appeals, and specific structural patterns that our model has learned to detect.
-          </div>
+        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">This model <strong>does not</strong> perform live fact-checking or web searches to verify claims. Instead, it looks at <em>how</em> the article is written. Fake news often uses sensationalist language, extreme emotional appeals, and specific structural patterns that our model has learned to detect.</div>
         </div>
       </div>
       <div class="accordion-item">
         <h2 class="accordion-header" id="headingThree">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-            data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
             Why do I need to paste the full article?
           </button>
         </h2>
-        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
-          data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            The model performs best when it has more text to analyze. While it can evaluate just a headline, analyzing
-            the full body text provides much more linguistic context, significantly increasing the accuracy and
-            reliability of the confidence score.
-          </div>
+        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">The model performs best when it has more text to analyse. While it can evaluate just a headline, analysing the full body text provides much more linguistic context, significantly increasing the accuracy and reliability of the confidence score.</div>
         </div>
       </div>
       <div class="accordion-item">
         <h2 class="accordion-header" id="headingFour">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-            data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
             Is it free to use?
           </button>
         </h2>
-        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
-          data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            Yes, the basic verification tool is fully free to use. You can also create a free account to track your
-            verification history across devices.
-          </div>
+        <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Yes, the basic verification tool is fully free to use. You can also create a free account to track your verification history across devices.</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA Section -->
-<section class="section-padding text-center"
-  style="background: linear-gradient(180deg, transparent, rgba(14, 165, 233, 0.05)); margin-bottom: -40px;">
-  <div class="container container-inner">
+<!-- ══════════════════════════════════════════════════════
+     CTA
+══════════════════════════════════════════════════════ -->
+<section class="section-padding text-center reveal"
+  style="background:linear-gradient(180deg,transparent,rgba(99,102,241,0.06));margin-bottom:-60px;">
+  <div class="container container-inner" style="max-width:600px;">
     <h2 class="section-title mb-4">Start Verifying Today</h2>
-    <p class="section-subtitle mx-auto mb-4" style="color: var(--text-muted);">Join a community of readers prioritizing truth and
-      accuracy in their daily news consumption.</p>
+    <p class="section-subtitle mx-auto mb-4">Join a community of readers prioritising truth and accuracy in their daily news consumption.</p>
     {% if not current_user.is_authenticated %}
-    <a href="/signup" class="btn btn-primary btn-lg px-5 py-3"
-      style="border-radius: 50px; font-weight: 600; box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);"><i
-        class="bi bi-person-plus me-2"></i> Create Free Account</a>
+    <a href="/signup" class="btn-verify" style="display:inline-flex;text-decoration:none;padding:16px 48px;font-size:1.1rem;">
+      <i class="bi bi-person-plus"></i> Create Free Account
+    </a>
     {% else %}
-    <a href="/dashboard" class="btn btn-primary btn-lg px-5 py-3"
-      style="border-radius: 50px; font-weight: 600; box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);"><i
-        class="bi bi-speedometer2 me-2"></i> Go to Dashboard</a>
+    <a href="/dashboard" class="btn-verify" style="display:inline-flex;text-decoration:none;padding:16px 48px;font-size:1.1rem;">
+      <i class="bi bi-speedometer2"></i> Go to Dashboard
+    </a>
     {% endif %}
   </div>
 </section>
 
-<!-- Footer -->
+<!-- ══════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════ -->
 <footer class="site-footer">
   <div class="container container-inner">
     <div class="row g-4">
       <div class="col-lg-4 col-md-6">
         <div class="footer-brand">
-          <img src="/static/img/logo.png" alt="logo" style="width: 32px; height: 32px; border-radius: 6px;" />
+          <img src="/static/img/logo.png" alt="logo" style="width:32px;height:32px;border-radius:8px;" />
           <span class="footer-brand-name">AI NewsVerifier</span>
         </div>
-        <p class="footer-text">
-          Empowering readers with advanced AI to detect fake news, misinformation, and sensationalist language. Verify
-          before you share.
-        </p>
+        <p class="footer-text">Empowering readers with advanced AI to detect fake news, misinformation, and sensationalist language. Verify before you share.</p>
       </div>
       <div class="col-lg-2 col-md-3 col-6 offset-lg-2">
         <div class="footer-links">
@@ -397,7 +383,7 @@
             <li><a href="/">Verifier</a></li>
             <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/api">API</a></li>
-            <li><a href="/about">Pricing</a></li>
+            <li><a href="/about">About</a></li>
           </ul>
         </div>
       </div>
@@ -425,9 +411,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p class="footer-text mb-0">&copy;
-        <script>document.write(new Date().getFullYear())</script> AI NewsVerifier. All rights reserved.
-      </p>
+      <p class="footer-text mb-0">&copy; <script>document.write(new Date().getFullYear())</script> AI NewsVerifier. All rights reserved.</p>
       <div class="social-links">
         <a href="#"><i class="bi bi-twitter-x"></i></a>
         <a href="#"><i class="bi bi-github"></i></a>
@@ -436,24 +420,33 @@
     </div>
   </div>
 </footer>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
-  const form = document.getElementById('predictForm');
-  const result = document.getElementById('result');
+  /* ── PREDICTION FORM ── */
+  const form     = document.getElementById('predictForm');
+  const result   = document.getElementById('result');
   const clearBtn = document.getElementById('clearBtn');
-  clearBtn.addEventListener('click', () => { document.getElementById('text').value = ''; result.innerHTML = ''; });
+
+  clearBtn.addEventListener('click', () => {
+    document.getElementById('text').value = '';
+    result.innerHTML = '';
+  });
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    result.innerHTML = '<div class="alert alert-info">Predicting…</div>';
+    result.innerHTML = `
+      <div style="text-align:center;padding:40px 20px;">
+        <div class="spinner-border" role="status" style="color:var(--accent-indigo);width:48px;height:48px;border-width:4px;"></div>
+        <p style="color:var(--text-muted);margin-top:16px;font-size:0.95rem;">Analysing article patterns…</p>
+      </div>`;
 
-    // Check which tab is active
     const isUrlTab = document.getElementById('url-tab').classList.contains('active');
     const text = document.getElementById('text').value;
-    const url = document.getElementById('news-url').value;
-
-    const payload = isUrlTab ? { url: url } : { text: text };
+    const url  = document.getElementById('news-url').value;
+    const payload = isUrlTab ? { url } : { text };
 
     try {
       const res = await fetch('/predict', {
@@ -462,240 +455,211 @@
         body: JSON.stringify(payload)
       });
       const j = await res.json();
+
       if (j.error) {
-        result.innerHTML = `<div class="alert alert-danger">Error: ${j.error}</div>`;
+        result.innerHTML = `<div class="alert alert-danger" style="border-radius:14px;">${j.error}</div>`;
+        return;
+      }
+
+      const confidence   = Math.round(j.probability * 100);
+      const isFake       = j.prediction === 'FAKE';
+      const radius       = 44;
+      const circumference = 2 * Math.PI * radius;
+      const offset       = circumference - (confidence / 100) * circumference;
+      const verdictColor = isFake ? '#ef4444' : '#10b981';
+      const verdictIcon  = isFake ? 'bi-x-octagon-fill' : 'bi-patch-check-fill';
+
+      let html = `
+        <div class="prediction-result p-4">
+          <div class="row align-items-center g-4">
+            <!-- Left: donut + verdict -->
+            <div class="col-md-4 text-center" style="border-right:1px solid var(--border-light);">
+              <div class="donut-wrapper mb-3">
+                <svg class="donut-svg" viewBox="0 0 100 100">
+                  <circle class="donut-bg" cx="50" cy="50" r="${radius}"></circle>
+                  <circle class="donut-ring ${isFake ? 'fake' : 'real'}" cx="50" cy="50" r="${radius}"
+                    style="stroke-dasharray:${circumference};stroke-dashoffset:${circumference};"></circle>
+                </svg>
+                <div class="donut-text">
+                  <div class="percent">${confidence}%</div>
+                  <div class="label">Confidence</div>
+                </div>
+              </div>
+              <div class="animate-pop" style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.6rem;color:${verdictColor};letter-spacing:2px;">
+                <i class="bi ${verdictIcon}" style="font-size:2.2rem;display:block;margin-bottom:8px;filter:drop-shadow(0 0 12px ${verdictColor});"></i>
+                ${j.prediction}
+              </div>
+            </div>
+            <!-- Right: details -->
+            <div class="col-md-8 ps-md-4">`;
+
+      if (j.source_domain) {
+        const credScore  = j.source_credibility;
+        const credReason = j.credibility_reason || "Analyzed via Web Engine";
+        const credColor  = credScore > 7.0 ? '#10b981' : (credScore > 4.0 ? '#f59e0b' : '#ef4444');
+        html += `
+          <div class="mb-3">
+            <h6 style="color:var(--text-primary);font-weight:700;margin-bottom:10px;font-size:0.875rem;"><i class="bi bi-shield-check me-2" style="color:var(--accent-indigo);"></i>Source Reliability</h6>
+            <span class="credibility-badge" style="border:1px solid ${credColor}33;background:${credColor}11;">
+              <i class="bi bi-globe" style="color:${credColor};"></i>
+              <strong>${j.source_domain}</strong>
+              <span style="color:${credColor};">| ${credScore}/10</span>
+            </span>
+            <div style="font-size:0.82rem;color:var(--text-muted);margin-top:8px;padding-left:10px;border-left:2px solid ${credColor};">
+              <i class="bi bi-info-circle me-1"></i> ${credReason}
+            </div>
+          </div>`;
+      }
+
+      let displayText = isUrlTab ? j.scraped_text : text;
+      if (displayText && j.suspicious_words && j.suspicious_words.length > 0) {
+        j.suspicious_words.forEach(word => {
+          if (!word.trim()) return;
+          const regex = new RegExp(`\\b${word}\\b`, 'gi');
+          displayText = displayText.replace(regex, `<span class="highlight-fake">$&</span>`);
+        });
+        html += `<div class="mt-2 mb-3 p-3" style="background:var(--bg-input);border-radius:10px;max-height:190px;overflow-y:auto;font-size:0.88rem;color:var(--text-muted);border:1px solid var(--border-light);line-height:1.7;">${displayText}</div>`;
+      }
+
+      if (j.explanation) {
+        html += `
+          <div class="explanation-box ${isFake ? 'fake-box' : ''} animate-pop" style="animation-delay:0.2s;">
+            <h6 style="color:var(--text-primary);font-weight:700;margin-bottom:6px;font-size:0.875rem;"><i class="bi bi-robot me-2"></i>AI Reasoning Panel</h6>
+            <p style="margin:0;font-size:0.9rem;line-height:1.6;">${j.explanation}</p>
+            ${j.suspicious_words && j.suspicious_words.length > 0
+              ? `<small style="color:var(--text-muted);margin-top:8px;display:block;"><strong>Trigger Flags:</strong> ${j.suspicious_words.join(', ')}</small>`
+              : ''}
+          </div>`;
+      }
+
+      html += `</div></div>`;
+
+      if (j.prediction === 'REAL') {
+        const cleanQuery = (isUrlTab && j.scraped_text ? j.scraped_text : text).replace(/"/g, '&quot;').replace(/'/g, '&#39;').substring(0, 100);
+        html += `
+          <div class="mt-4 pt-4" style="border-top:1px solid var(--border-light);">
+            <button type="button" class="btn-verify w-100 load-related-dash-btn" style="background:linear-gradient(135deg,#10b981,#06b6d4);justify-content:center;" data-query="${cleanQuery}">
+              <i class="bi bi-search-heart"></i> Find Related Live Reports
+            </button>
+            <div id="related-dash-container" class="mt-3" style="display:none;"></div>
+          </div>`;
+      }
+
+      if (j.prediction_id) {
+        html += `
+          <div class="mt-4 text-center pt-2">
+            <form method="post" action="/publish/${j.prediction_id}">
+              <button type="submit" class="btn-verify" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);margin:0 auto;">
+                <i class="bi bi-globe-americas"></i> Publish to Community Feed
+              </button>
+            </form>
+          </div>`;
+      }
+
+      if (j.web_results && j.web_results.length > 0) {
+        html += `
+          <div class="mt-4 pt-4" style="border-top:1px solid var(--border-light);">
+            <h5 style="font-family:'Sora',sans-serif;font-weight:700;color:var(--text-primary);margin-bottom:8px;">
+              <i class="bi bi-globe2 me-2" style="color:var(--accent-cyan);"></i>Live Web Verification Sources
+            </h5>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px;">We queried the internet for this topic. Here is what leading sources are currently publishing:</p>
+            <div class="row g-3">`;
+        j.web_results.forEach(r => {
+          html += `
+            <div class="col-md-6 col-lg-4">
+              <div class="web-source-card">
+                <h6><a href="${r.href}" target="_blank" rel="noopener">${r.title} <i class="bi bi-box-arrow-up-right" style="font-size:0.65rem;"></i></a></h6>
+                <p>${r.body}</p>
+              </div>
+            </div>`;
+        });
+        html += `</div></div>`;
+      } else if (j.web_results && j.web_results.length === 0) {
+        html += `
+          <div class="mt-4 pt-4" style="border-top:1px solid var(--border-light);">
+            <div style="background:var(--bg-input);border:1px solid var(--border-light);border-radius:10px;padding:14px 18px;color:var(--text-muted);font-size:0.875rem;">
+              <i class="bi bi-search me-2"></i>No highly relevant recent news articles could be found verifying this exact claim.
+            </div>
+          </div>`;
+      }
+
+      html += `</div>`;
+      result.innerHTML = html;
+
+      setTimeout(() => {
+        const ring = document.querySelector('.donut-ring');
+        if (ring) ring.style.strokeDashoffset = offset;
+      }, 100);
+
+    } catch (err) {
+      result.innerHTML = `<div class="alert alert-danger" style="border-radius:14px;">Request failed. Please try again.</div>`;
+    }
+  });
+
+  /* ── RELATED NEWS DELEGATION ── */
+  document.addEventListener('click', async function (e) {
+    const btn = e.target && e.target.closest('.load-related-dash-btn');
+    if (!btn) return;
+    const query     = btn.getAttribute('data-query');
+    const container = document.getElementById('related-dash-container');
+    if (container.innerHTML !== '') {
+      container.style.display = container.style.display === 'none' ? 'block' : 'none';
+      return;
+    }
+    container.style.display = 'block';
+    container.innerHTML = `<div style="color:var(--text-muted);font-size:0.875rem;padding:12px;background:var(--bg-input);border-radius:8px;"><div class="spinner-border spinner-border-sm me-2" role="status" style="color:var(--accent-indigo);"></div>Querying global news sources…</div>`;
+    try {
+      const res  = await fetch('/api/related_news', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query }) });
+      const data = await res.json();
+      if (data.status === 'success' && data.articles.length > 0) {
+        let html = `<div style="background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:16px;">
+          <h6 style="font-size:0.875rem;font-weight:700;color:var(--text-primary);margin-bottom:14px;"><i class="bi bi-search-heart me-2" style="color:#10b981;"></i>Live Journalistic Corroboration</h6>`;
+        data.articles.forEach(art => {
+          html += `<div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.05);">
+            <a href="${art.href}" target="_blank" style="font-size:0.875rem;font-weight:600;color:var(--accent-cyan);text-decoration:none;">${art.title} <i class="bi bi-box-arrow-up-right" style="font-size:0.65rem;"></i></a>
+            <p style="margin:4px 0 0;font-size:0.8rem;color:var(--text-muted);">${art.snippet}</p>
+          </div>`;
+        });
+        html += '</div>';
+        container.innerHTML = html;
       } else {
-        const confidence = Math.round(j.probability * 100);
-        const isFake = j.prediction === 'FAKE';
-
-        const radius = 40;
-        const circumference = 2 * Math.PI * radius;
-        const offset = circumference - (confidence / 100) * circumference;
-
-        let htmlContent = `
-            <div class="alert alert-light prediction-result p-4" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--border-light); border-radius: 16px;">
-              <div class="row align-items-center">
-                <div class="col-md-4 text-center border-end border-secondary mb-4 mb-md-0">
-                  <!-- Animated Donut Chart -->
-                  <div class="donut-wrapper">
-                    <svg class="donut-svg" viewBox="0 0 100 100">
-                      <circle class="donut-bg" cx="50" cy="50" r="${radius}"></circle>
-                      <circle class="donut-ring ${isFake ? 'fake' : 'real'}" cx="50" cy="50" r="${radius}" 
-                              style="stroke-dasharray: ${circumference}; stroke-dashoffset: ${circumference};"></circle>
-                    </svg>
-                    <div class="donut-text">
-                      <div class="percent">${confidence}%</div>
-                      <div class="label">Confidence</div>
-                    </div>
-                  </div>
-                  <h4 class="mt-4 animate-pop ${isFake ? 'text-danger' : 'text-success'}" style="font-weight:800; letter-spacing:1px; font-size: 1.8rem;">
-                    <i class="bi ${isFake ? 'bi-x-octagon-fill' : 'bi-patch-check-fill'}" style="font-size: 2.5rem; display: block; margin-bottom: 8px;"></i> ${j.prediction}
-                  </h4>
-                </div>
-                <div class="col-md-8 ps-md-4">
-        `;
-
-        // Add Credibility Badge
-        if (j.source_domain) {
-          const credScore = j.source_credibility;
-          const credReason = j.credibility_reason || "Analyzed via Web Engine";
-          let credColor = credScore > 7.0 ? '#10b981' : (credScore > 4.0 ? '#f59e0b' : '#ef4444');
-          htmlContent += `
-              <div class="mb-3">
-                <h6 class="theme-text mb-2"><i class="bi bi-shield-check"></i> Source Reliability Assessment</h6>
-                <span class="credibility-badge ms-0" style="border:1px solid ${credColor}">
-                  <i class="bi bi-globe"></i> <span style="font-weight:700;">${j.source_domain}</span>
-                  <span style="color:${credColor}; margin-left:8px;">| Reliability: ${credScore}/10</span>
-                </span>
-                <div class="small text-muted mt-2 ps-2" style="border-left: 2px solid ${credColor};"><i class="bi bi-info-circle"></i> ${credReason}</div>
-              </div>
-          `;
-        }
-
-        // Highlight logic for scraped text
-        let displayText = isUrlTab ? j.scraped_text : text;
-        if (displayText && j.suspicious_words && j.suspicious_words.length > 0) {
-          j.suspicious_words.forEach(word => {
-            if (word.trim() === '') return;
-            const regex = new RegExp(`\\b${word}\\b`, 'gi');
-            displayText = displayText.replace(regex, `<span class="highlight-fake">$&</span>`);
-          });
-          htmlContent += `<div class="mt-3 p-3" style="background: var(--bg-card-hover); border-radius:8px; max-height:200px; overflow-y:auto; font-size:0.9rem; color: var(--text-muted); border:1px solid rgba(255,255,255,0.05);">${displayText}</div>`;
-        }
-
-        // Add AI Explanation
-        if (j.explanation) {
-          htmlContent += `
-              <div class="explanation-box ${isFake ? 'fake-box' : ''} mt-3 animate-pop" style="animation-delay: 0.2s;">
-                <h6 style="color:#f8fafc; font-weight:700;"><i class="bi bi-robot"></i> AI Reasoning Panel</h6>
-                <p class="mb-1" style="font-size:0.95rem;">${j.explanation}</p>
-                ${j.suspicious_words && j.suspicious_words.length > 0 ? `<small class="text-muted mt-2 d-block"><strong>Trigger Flags Detected:</strong> ${j.suspicious_words.join(', ')}</small>` : ''}
-              </div>
-          `;
-        }
-
-        htmlContent += `</div></div>`; // Close row and col-8
-
-        // Related News Component for the Prediction Dashboard
-        if (j.prediction === 'REAL') {
-          // Escape quotes correctly using a safe string literal slice 
-          const cleanQuery = isUrlTab && j.scraped_text ? j.scraped_text : text;
-          const safeQuery = cleanQuery.replace(/"/g, '&quot;').replace(/'/g, '&#39;').substring(0, 100);
-          htmlContent += `
-            <div class="mt-4 pt-4 border-top border-secondary" style="border-color: rgba(255,255,255,0.05) !important;">
-                <button type="button" class="btn btn-outline-success w-100 load-related-dash-btn" style="border-radius: 12px; font-weight: 600;" data-query="${safeQuery}">
-                    <i class="bi bi-search-heart me-2"></i> Find Related Live Reports
-                </button>
-                <div id="related-dash-container" class="mt-3" style="display:none; transition: all 0.3s ease;"></div>
-            </div>
-          `;
-        }
-
-        // Add Community Publish Button if prediction saved
-        if (j.prediction_id) {
-          htmlContent += `
-            <div class="mt-4 text-center pb-2 pt-4">
-              <form method="post" action="/publish/${j.prediction_id}">
-                <button type="submit" class="btn btn-primary animate-pop" style="border-radius: 50px; padding: 12px 30px; font-weight: 600; animation-delay: 0.1s; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);">
-                  <i class="bi bi-globe-americas me-2"></i> Publish to Community Feed
-                </button>
-              </form>
-            </div>
-          `;
-        }
-
-        // Add Web Results section (Live DuckDuckGo Searches)
-        if (j.web_results && j.web_results.length > 0) {
-          htmlContent += `
-            <hr class="border-secondary my-4" style="opacity: 0.2;">
-            <h5 style="color:#f8fafc; font-weight:700; margin-bottom: 15px;"><i class="bi bi-globe2 me-2" style="color: #34d399;"></i> Live Web Verification Sources</h5>
-            <p class="text-muted small mb-4">We queried the internet for this topic. Here is what leading web sources are currently publishing:</p>
-            <div class="row g-3">
-          `;
-          j.web_results.forEach(res => {
-            htmlContent += `
-              <div class="col-md-6 col-lg-4">
-                <div class="web-source-card">
-                  <h6><a href="${res.href}" target="_blank" rel="noopener noreferrer">${res.title} <i class="bi bi-box-arrow-up-right ms-1" style="font-size:0.7rem;"></i></a></h6>
-                  <p>${res.body}</p>
-                </div>
-              </div>
-            `;
-          });
-          htmlContent += `</div>`;
-        } else if (j.web_results && j.web_results.length === 0) {
-          htmlContent += `
-            <hr class="border-secondary my-4" style="opacity: 0.2;">
-            <div class="alert alert-dark" style="background: var(--bg-card); border: 1px solid var(--border-light); color: var(--text-muted);">
-              <i class="bi bi-search me-2"></i> No highly relevant recent news articles could be found verifying this exact claim.
-            </div>
-          `;
-        }
-
-        htmlContent += `</div>`; // Close alert box wrapper
-
-        result.innerHTML = htmlContent;
-
-        // Trigger donut animation natively after DOM insertion for silky smooth rendering
-        setTimeout(() => {
-          const ring = document.querySelector('.donut-ring');
-          if (ring) {
-            ring.style.strokeDashoffset = offset;
-          }
-        }, 100);
+        container.innerHTML = `<div style="background:var(--bg-input);border-radius:8px;padding:12px;color:var(--text-muted);font-size:0.875rem;"><i class="bi bi-info-circle me-1"></i>No directly corroborating live articles found.</div>`;
       }
     } catch (err) {
-      result.innerHTML = '<div class="alert alert-danger">Request failed.</div>';
+      container.innerHTML = `<div style="color:#ef4444;font-size:0.875rem;padding:8px;"><i class="bi bi-x-circle me-1"></i>Error fetching related news.</div>`;
     }
   });
 
-  // Event Delegation for the dynamically added Related News btn
-  document.addEventListener('click', async function(e) {
-    if (e.target && e.target.closest('.load-related-dash-btn')) {
-      const btn = e.target.closest('.load-related-dash-btn');
-      const query = btn.getAttribute('data-query');
-      const container = document.getElementById('related-dash-container');
-      
-      if (container.innerHTML !== '') {
-          container.style.display = container.style.display === 'none' ? 'block' : 'none';
-          return;
-      }
-      
-      container.style.display = 'block';
-      container.innerHTML = '<div class="text-muted small p-2" style="background: rgba(0,0,0,0.02); border-radius: 6px;"><div class="spinner-border spinner-border-sm me-2 text-primary" role="status"></div> Querying global news sources...</div>';
-      
-      try {
-          const res = await fetch('/api/related_news', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ query: query })
-          });
-          const data = await res.json();
-          
-          if (data.status === 'success' && data.articles.length > 0) {
-              let html = '<div class="p-3 rounded" style="background: rgba(16, 185, 129, 0.04); border: 1px solid rgba(16, 185, 129, 0.2);"><h6 class="theme-text mb-3" style="font-size: 0.9rem; font-weight: 700;"><i class="bi bi-search-heart me-2" style="color: #10b981;"></i> Live Journalistic Corroboration</h6>';
-              data.articles.forEach(art => {
-                  html += `
-                      <div class="mb-3 pb-2" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                          <a href="${art.href}" target="_blank" style="font-size: 0.9rem; font-weight: 600; color: #34d399; text-decoration: none; display: block; margin-bottom: 4px;">${art.title} <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.7rem;"></i></a>
-                          <p class="mb-0 text-muted" style="font-size: 0.8rem; line-height: 1.4;">${art.snippet}</p>
-                      </div>
-                  `;
-              });
-              html += '</div>';
-              container.innerHTML = html;
-          } else {
-              container.innerHTML = '<div class="alert alert-dark small mb-0 p-2" style="background: var(--bg-card); border: 1px solid var(--glass-border);"><i class="bi bi-info-circle me-1"></i> No directly correlating live articles found.</div>';
-          }
-      } catch (err) {
-          container.innerHTML = '<div class="text-danger small p-2"><i class="bi bi-x-circle me-1"></i> Error fetching related news.</div>';
-      }
-    }
-  });
-</script>
-<script>
-  // Fetch and display news
-  // Fetch and display dual-pipeline news
+  /* ── NEWS LOADER ── */
   async function loadNews() {
-    const aiContainer = document.getElementById('ai-news-container');
+    const aiContainer    = document.getElementById('ai-news-container');
     const worldContainer = document.getElementById('world-news-container');
 
-    // 1. Fetch AI News (Vertical)
     try {
-      const resAI = await fetch('/api/ai_news');
+      const resAI  = await fetch('/api/ai_news');
       const dataAI = await resAI.json();
       if (dataAI.status === 'success' && dataAI.articles.length > 0) {
-        let htmlAI = '';
-        dataAI.articles.forEach(article => {
-          let dateStr = article.pubDate;
-          try {
-            const d = new Date(article.pubDate);
-            if (!isNaN(d.getTime())) dateStr = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-          } catch (e) { }
-          htmlAI += `
-            <a href="${article.link}" target="_blank" rel="noopener noreferrer" class="news-item d-block p-3 mb-2 rounded text-decoration-none theme-card shadow-sm" style="transition: transform 0.2s;">
-              <h6 class="mb-2 theme-text fw-bold" style="font-size:0.9rem; line-height: 1.4;">${article.title}</h6>
-              <div class="theme-muted" style="font-size:0.75rem;"><i class="bi bi-clock me-1"></i>${dateStr}</div>
-            </a>
-          `;
+        let html = '';
+        dataAI.articles.forEach(a => {
+          let dateStr = a.pubDate;
+          try { const d = new Date(a.pubDate); if (!isNaN(d)) dateStr = d.toLocaleDateString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); } catch(e){}
+          html += `<a href="${a.link}" target="_blank" rel="noopener" class="news-item d-block p-3 mb-2 rounded text-decoration-none">
+            <h6 style="font-size:0.875rem;font-weight:600;line-height:1.4;color:var(--text-primary);margin-bottom:4px;">${a.title}</h6>
+            <div style="font-size:0.72rem;color:var(--text-muted);"><i class="bi bi-clock me-1"></i>${dateStr}</div>
+          </a>`;
         });
-        aiContainer.innerHTML = htmlAI;
+        aiContainer.innerHTML = html;
       } else {
-        aiContainer.innerHTML = '<div class="theme-muted p-3">No news available at the moment.</div>';
+        aiContainer.innerHTML = '<div style="color:var(--text-muted);padding:16px;">No news available at the moment.</div>';
       }
     } catch (err) {
-      console.error(err);
-      aiContainer.innerHTML = '<div class="alert alert-danger p-2 small">Failed to load news.</div>';
+      aiContainer.innerHTML = '<div class="alert alert-danger p-2" style="font-size:0.85rem;border-radius:8px;">Failed to load news.</div>';
     }
 
-    // 2. Fetch World Impact News (Horizontal Thick Cards)
     try {
-      const resWorld = await fetch('/api/world_news');
+      const resWorld  = await fetch('/api/world_news');
       const dataWorld = await resWorld.json();
       if (dataWorld.status === 'success' && dataWorld.articles.length > 0) {
-        let htmlWorld = '';
-        
-        // Array of high quality generic global conflict/news impact images
         const stockImages = [
           "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=800",
           "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&q=80&w=800",
@@ -706,53 +670,37 @@
           "https://images.unsplash.com/photo-1572949645841-094f3a9c4c94?auto=format&fit=crop&q=80&w=800",
           "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800"
         ];
-
-        // Duplicate the articles array to allow a seamless infinite loop from -50% to 0%
-        const infinitelyLoopedArticles = [...dataWorld.articles, ...dataWorld.articles];
-
-        htmlWorld += `<div class="thick-marquee-content" style="gap: 20px; padding: 0 10px;">`;
-
-        infinitelyLoopedArticles.forEach((article, index) => {
-          let dateStr = article.pubDate;
-          try {
-            const d = new Date(article.pubDate);
-            if (!isNaN(d.getTime())) dateStr = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-          } catch (e) { }
-
-          let imgUrl = stockImages[index % stockImages.length];
-
-          htmlWorld += `
-            <a href="${article.link}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-              <div class="card theme-card shadow-sm" style="width: 380px; height: 100%; border-radius: 12px; transition: transform 0.2s ease, border-color 0.2s; border: 1px solid var(--border-light); overflow:hidden;">
-                <div style="position: relative;">
-                  <img src="${imgUrl}" class="card-img-top" alt="World News" style="height: 200px; object-fit: cover;">
-                  <div style="position: absolute; top: 12px; left: 12px;">
-                    <span class="badge" style="background: rgba(239, 68, 68, 0.9); backdrop-filter: blur(4px); font-weight: 700; padding: 6px 10px;"><i class="bi bi-broadcast me-1"></i>BREAKING</span>
-                  </div>
-                </div>
-                <div class="card-body p-4 d-flex flex-column">
-                  <h5 class="card-title theme-text fw-bold mb-3" style="line-height: 1.4; font-size: 1.15rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${article.title}</h5>
-                  <div class="mt-auto pt-2">
-                    <p class="theme-muted small mb-0"><i class="bi bi-clock me-1"></i>${dateStr}</p>
-                  </div>
+        const looped = [...dataWorld.articles, ...dataWorld.articles];
+        let html = '<div class="thick-marquee-content">';
+        looped.forEach((a, i) => {
+          let dateStr = a.pubDate;
+          try { const d = new Date(a.pubDate); if (!isNaN(d)) dateStr = d.toLocaleDateString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); } catch(e){}
+          const imgUrl = stockImages[i % stockImages.length];
+          html += `<a href="${a.link}" target="_blank" rel="noopener" class="text-decoration-none" style="flex-shrink:0;">
+            <div style="width:360px;border-radius:16px;overflow:hidden;border:1px solid var(--border-light);background:var(--bg-surface);transition:transform 0.2s,border-color 0.2s;" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='rgba(99,102,241,0.3)';" onmouseout="this.style.transform='';this.style.borderColor='var(--border-light)';">
+              <div style="position:relative;">
+                <img src="${imgUrl}" alt="News" style="height:190px;width:100%;object-fit:cover;">
+                <div style="position:absolute;top:12px;left:12px;">
+                  <span style="background:rgba(239,68,68,0.9);backdrop-filter:blur(4px);color:#fff;font-size:0.65rem;font-weight:800;letter-spacing:1.5px;padding:5px 10px;border-radius:6px;"><i class="bi bi-broadcast me-1"></i>BREAKING</span>
                 </div>
               </div>
-            </a>
-          `;
+              <div style="padding:20px;">
+                <h5 style="font-size:1rem;font-weight:700;color:var(--text-primary);line-height:1.4;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${a.title}</h5>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin:0;"><i class="bi bi-clock me-1"></i>${dateStr}</p>
+              </div>
+            </div>
+          </a>`;
         });
-        
-        htmlWorld += `</div>`;
-        worldContainer.innerHTML = htmlWorld;
+        html += '</div>';
+        worldContainer.innerHTML = html;
       } else {
-        worldContainer.innerHTML = '<div class="theme-muted p-3">No world news available at the moment.</div>';
+        worldContainer.innerHTML = '<div style="color:var(--text-muted);padding:16px;text-align:center;">No world news available at the moment.</div>';
       }
     } catch (err) {
-      console.error('Error fetching news:', err);
-      worldContainer.innerHTML = '<div class="alert alert-danger p-2 small">Failed to load world news.</div>';
+      worldContainer.innerHTML = '<div class="alert alert-danger p-2" style="font-size:0.85rem;border-radius:8px;">Failed to load world news.</div>';
     }
   }
 
-  // Load news on page load
   document.addEventListener('DOMContentLoaded', loadNews);
 </script>
 {% endblock %}

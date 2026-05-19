@@ -1,168 +1,82 @@
 {% extends 'base.html' %}
-
-{% block title %}Login — AI News Verifier{% endblock %}
-
-{% block head %}
-<style>
-  .auth-shell {
-    min-height: calc(100vh - 64px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 48px 16px;
-    background:
-      radial-gradient(ellipse at 10% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
-      radial-gradient(ellipse at 90% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
-      var(--bg-main);
-  }
-
-  .auth-card {
-    width: 100%;
-    max-width: 440px;
-    background: var(--glass-bg);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
-    padding: 44px 40px;
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-  }
-
-  .auth-icon {
-    width: 52px;
-    height: 52px;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(14, 165, 233, 0.2));
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    margin-bottom: 20px;
-    color: #34d399;
-  }
-
-  .auth-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 6px;
-    letter-spacing: -0.03em;
-  }
-
-  .auth-subtitle {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 32px;
-  }
-
-  .auth-label {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  .auth-input {
-    width: 100%;
-    background: var(--bg-card);
-    border: 1px solid var(--border-light);
-    border-radius: 10px;
-    color: var(--text-primary);
-    padding: 12px 16px;
-    font-size: 0.95rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    outline: none;
-  }
-
-  .auth-input::placeholder {
-    color: #475569;
-  }
-
-  .auth-input:focus {
-    border-color: rgba(52, 211, 153, 0.5);
-    box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
-  }
-
-  .auth-btn {
-    width: 100%;
-    padding: 13px;
-    background: linear-gradient(135deg, #10b981, #0ea5e9);
-    border: none;
-    border-radius: 10px;
-    color: #fff;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.15s;
-    margin-top: 8px;
-    letter-spacing: 0.01em;
-  }
-
-  .auth-btn:hover {
-    opacity: 0.88;
-    transform: translateY(-1px);
-  }
-
-  .auth-divider {
-    border: none;
-    border-top: 1px solid var(--border-light);
-    margin: 24px 0;
-  }
-
-  .auth-footer-text {
-    text-align: center;
-    font-size: 0.875rem;
-    color: var(--text-muted);
-  }
-
-  .auth-footer-text a {
-    color: #34d399;
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  .auth-footer-text a:hover {
-    text-decoration: underline;
-  }
-
-  .input-group-dark {
-    margin-bottom: 20px;
-  }
-</style>
-{% endblock %}
+{% block title %}Login — AI NewsVerifier{% endblock %}
 
 {% block content %}
 <div class="auth-shell">
-  <div class="auth-card">
-    <div class="auth-icon"><i class="bi bi-shield-lock-fill"></i></div>
-    <div class="auth-title">Welcome back</div>
-    <div class="auth-subtitle">Sign in to access your verification history.</div>
 
-    <form method="post" action="/login" autocomplete="on">
-      <div class="input-group-dark">
-        <label class="auth-label" for="login-username">Username or Email</label>
-        <input id="login-username" name="username" class="auth-input" placeholder="you@example.com" required
-          autocomplete="username" />
-      </div>
-      <div class="input-group-dark">
-        <label class="auth-label" for="login-password">Password</label>
-        <input id="login-password" name="password" type="password" class="auth-input" placeholder="••••••••" required
-          autocomplete="current-password" />
-      </div>
-      <button type="submit" class="auth-btn">
-        <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
-      </button>
-    </form>
+  <!-- ── LEFT DECORATIVE PANEL ── -->
+  <div class="auth-deco">
+    <!-- The background image handles the visual here now -->
+  </div>
 
-    <hr class="auth-divider" />
-    <div class="auth-footer-text">
-      Don't have an account? <a href="/signup">Create one for free</a>
+  <!-- ── RIGHT FORM PANEL ── -->
+  <div class="auth-form-side">
+    <div class="auth-form-inner">
+
+      <div class="auth-form-heading">SIGN IN</div>
+      <div class="auth-form-sub">Sign in with email address</div>
+
+      <form method="post" action="/login" autocomplete="on">
+
+        <div class="auth-field">
+          <label class="auth-label" for="login-username">Username or Email</label>
+          <div class="auth-input-wrap">
+            <i class="bi bi-envelope auth-input-icon"></i>
+            <input
+              id="login-username"
+              name="username"
+              class="auth-input"
+              placeholder="Yourname@gmail.com"
+              required
+              autocomplete="username" />
+          </div>
+        </div>
+
+        <div class="auth-field">
+          <label class="auth-label" for="login-password">Password</label>
+          <div class="auth-input-wrap">
+            <i class="bi bi-lock auth-input-icon"></i>
+            <input
+              id="login-password"
+              name="password"
+              type="password"
+              class="auth-input"
+              placeholder="••••••••"
+              required
+              autocomplete="current-password" />
+          </div>
+        </div>
+
+        <button type="submit" class="auth-btn">
+          Sign In
+        </button>
+      </form>
+
+      <hr class="auth-divider" />
+      
+      <div class="social-buttons">
+        <button type="button" class="social-btn social-btn-google">
+          <i class="bi bi-google"></i> Google
+        </button>
+        <button type="button" class="social-btn social-btn-facebook">
+          <i class="bi bi-facebook"></i> Facebook
+        </button>
+      </div>
+
+      <div class="auth-footer-text" style="font-size: 0.75rem; margin-top: 16px;">
+        By registering you agree with our <a href="#">Terms and Conditions</a><br><br>
+        <span style="font-size: 0.9rem;">Don't have an account? <a href="/signup">Create one for free &rarr;</a></span>
+      </div>
+
     </div>
   </div>
+
 </div>
+{% endblock %}
+
+{% block head %}
+<style>
+  /* Make auth shell fill viewport minus navbar */
+  .auth-shell { min-height: calc(100vh - 68px); }
+</style>
 {% endblock %}

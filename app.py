@@ -3,7 +3,7 @@ import joblib
 from pathlib import Path
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from models import db, User, Prediction, Vote
+from models import db, User, Prediction, Vote, Proof
 import urllib.request
 import urllib.error
 import xml.etree.ElementTree as ET
@@ -14,6 +14,8 @@ import urllib.parse
 import re
 import numpy as np
 from duckduckgo_search import DDGS
+import bert_predictor
+import rag_engine
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'change-this-secret-in-production'
@@ -53,13 +55,22 @@ le = None
 
 def load_artifacts():
     global model, vectorizer, le
+    # Load legacy TF-IDF artifacts if available (used for suspicious-word highlights)
     if MODEL_PATH.exists() and VEC_PATH.exists() and LE_PATH.exists():
         model = joblib.load(MODEL_PATH)
         vectorizer = joblib.load(VEC_PATH)
         le = joblib.load(LE_PATH)
-        print('Loaded model artifacts.')
+        print('Loaded TF-IDF fallback artifacts.')
     else:
-        print('Model artifacts not found. Run `python train.py` first.')
+        print('TF-IDF artifacts not found (OK if using BERT).')
+
+    # Report BERT status
+    if bert_predictor.is_available():
+        print('BERT model ready  →  using BERT as primary classifier.')
+    else:
+        print('BERT model not cached. Run `python train.py` to download it.')
+        if model is None:
+            print('WARNING: No model available. Run `python train.py` first.')
 
 
 from sqlalchemy import text
@@ -102,6 +113,24 @@ with app.app_context():
         
     try:
         db.session.execute(text("ALTER TABLE users ADD COLUMN gender VARCHAR(20);"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        
+    try:
+        db.session.execute(text("ALTER TABLE users ADD COLUMN region VARCHAR(100);"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        
+    try:
+        db.session.execute(text("ALTER TABLE users ADD COLUMN address TEXT;"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        
+    try:
+        db.session.execute(text("ALTER TABLE predictions ADD COLUMN region VARCHAR(100);"))
         db.session.commit()
     except Exception:
         db.session.rollback()
@@ -206,6 +235,12 @@ def search_web_verification(text):
             headline = ' '.join(words) + " news"
             
         results = DDGS().text(headline, max_results=3)
+        
+        # Treat empty results from DDGS as a network/rate-limit failure, not definitive proof of fake news.
+        # This prevents real news from being severely penalized with a 0.15 web score.
+        if not results:
+            return None
+            
         # Format results
         out = []
         for r in results:
@@ -221,7 +256,7 @@ def search_web_verification(text):
 
 def extract_model_highlights(text, vectorizer, model, le, is_fake):
     try:
-        if not hasattr(model, 'coef_'):
+        if model is None or not hasattr(model, 'coef_'):
             return []
         
         classes = list(le.classes_)
@@ -285,79 +320,162 @@ def predict():
     if not text:
         return jsonify({'error': 'No text or URL provided'}), 400
         
-    if model is None:
-        return jsonify({'error': 'Model not found. Run train.py first.'}), 500
-
-    X = vectorizer.transform([text])
-    if hasattr(model, 'predict_proba'):
-        proba = model.predict_proba(X)[0]
-        pred_idx = int(proba.argmax())
-        prob = float(proba[pred_idx])
-    else:
-        pred_idx = int(model.predict(X)[0])
-        prob = 1.0
-
-    label = le.inverse_transform([pred_idx])[0]
-    
-    # Base ML Evaluation
-    ml_is_fake = (label.upper() == 'FAKE')
-    ml_real_prob = prob if not ml_is_fake else (1.0 - prob)
-    
-    # Live Web Search
-    web_results = search_web_verification(text)
-    
-    web_score = 0.5
-    web_explanation = ""
-    
-    if web_results is not None:
-        if len(web_results) > 0:
-            valid_sources = 0
-            avg_credibility = 0
-            for res in web_results:
-                score, _ = get_credibility_score(res['href'])
-                avg_credibility += score
-                valid_sources += 1
-                
-            if valid_sources > 0:
-                avg_cred = avg_credibility / valid_sources
-                if avg_cred >= 7.0:
-                    web_score = 0.95
-                    web_explanation = "We verified this claim against live data. It is currently being actively reported by highly credible journalistic sources."
-                elif avg_cred >= 5.0:
-                    web_score = 0.75
-                    web_explanation = "We verified this claim online. It is currently being mentioned by various sources across the web."
-                else:
-                    web_score = 0.35
-                    web_explanation = "While we found articles discussing this, they originated from historically unreliable or heavily biased sources, reducing credibility."
-        else:
-            web_score = 0.15
-            web_explanation = "A live scan of the internet yielded zero results for this claim from any recognizable publisher, heavily increasing the likelihood that it is entirely fabricated."
+    # ── RAG / BERT / Fallback ────────────────────────────────────────────
+    if rag_engine.is_available():
+        rag_pred, rag_prob, rag_expl, web_res = rag_engine.verify_news_with_rag(text, url)
+        if rag_pred is not None:
+            final_label = rag_pred
+            final_prob = rag_prob
+            final_is_fake = (final_label == 'FAKE')
+            explanation = f"<strong>🧠 Gemini RAG Analysis:</strong> {rag_expl}"
+            suspicious_words = ""
+            web_results = web_res
             
-        final_real_prob = (ml_real_prob * 0.40) + (web_score * 0.60)
+            label = final_label
+            prob = final_prob
+            is_fake = final_is_fake
+        else:
+            # Fallback if RAG fails despite being configured
+            bert_flag = bert_predictor.is_available()
+            if bert_flag:
+                label, prob = bert_predictor.predict(text)
+            elif model is not None:
+                X = vectorizer.transform([text])
+                if hasattr(model, 'predict_proba'):
+                    proba = model.predict_proba(X)[0]
+                    pred_idx = int(proba.argmax())
+                    prob = float(proba[pred_idx])
+                else:
+                    pred_idx = int(model.predict(X)[0])
+                    prob = 1.0
+                label = le.inverse_transform([pred_idx])[0]
+            else:
+                return jsonify({'error': 'No model available. Run `python train.py` to download BERT.'}), 500
+
+            ml_is_fake = (label.upper() == 'FAKE')
+            ml_real_prob = prob if not ml_is_fake else (1.0 - prob)
+            web_results = search_web_verification(text)
+            
+            web_score = 0.5
+            web_explanation = ""
+            
+            if web_results is not None:
+                if len(web_results) > 0:
+                    valid_sources = 0
+                    avg_credibility = 0
+                    for res in web_results:
+                        score, _ = get_credibility_score(res['href'])
+                        avg_credibility += score
+                        valid_sources += 1
+                        
+                    if valid_sources > 0:
+                        avg_cred = avg_credibility / valid_sources
+                        if avg_cred >= 7.0:
+                            web_score = 0.95
+                            web_explanation = "We verified this claim against live data. It is currently being actively reported by highly credible journalistic sources."
+                        elif avg_cred >= 5.0:
+                            web_score = 0.75
+                            web_explanation = "We verified this claim online. It is currently being mentioned by various sources across the web."
+                        else:
+                            web_score = 0.35
+                            web_explanation = "While we found articles discussing this, they originated from historically unreliable or heavily biased sources, reducing credibility."
+                else:
+                    web_score = 0.15
+                    web_explanation = "A live scan of the internet yielded zero results for this claim from any recognizable publisher, heavily increasing the likelihood that it is entirely fabricated."
+                    
+                final_real_prob = (ml_real_prob * 0.60) + (web_score * 0.40)
+            else:
+                final_real_prob = ml_real_prob
+                web_explanation = "Due to network conditions, live web verification was unavailable. This prediction relies entirely on linguistics."
+                web_results = []
+                
+            if final_real_prob > 0.5:
+                final_label = "REAL"
+                final_prob = final_real_prob
+                final_is_fake = False
+            else:
+                final_label = "FAKE"
+                final_prob = 1.0 - final_real_prob
+                final_is_fake = True
+                
+            explanation_txt, suspicious_words = generate_explanation_and_highlights(text, vectorizer, model, le, ml_is_fake)
+            ml_label  = "🤖 BERT Semantic Analysis" if bert_flag else "🤖 TF-IDF Linguistic Filter"
+            explanation = f"<strong>{ml_label}:</strong> {explanation_txt} <br><br><strong>🌐 Live Web Ensemble:</strong> {web_explanation}"
+            
+            label = final_label
+            prob = final_prob
+            is_fake = final_is_fake
     else:
-        final_real_prob = ml_real_prob
-        web_explanation = "Due to network conditions, live web verification was unavailable. This prediction relies entirely on linguistics."
-        web_results = [] # ensure empty array rather than null for safety
+        # Same fallback if RAG is not configured
+        if bert_predictor.is_available():
+            label, prob = bert_predictor.predict(text)
+        elif model is not None:
+            X = vectorizer.transform([text])
+            if hasattr(model, 'predict_proba'):
+                proba = model.predict_proba(X)[0]
+                pred_idx = int(proba.argmax())
+                prob = float(proba[pred_idx])
+            else:
+                pred_idx = int(model.predict(X)[0])
+                prob = 1.0
+            label = le.inverse_transform([pred_idx])[0]
+        else:
+            return jsonify({'error': 'No model available. Run `python train.py` to download BERT.'}), 500
+
+        ml_is_fake = (label.upper() == 'FAKE')
+        ml_real_prob = prob if not ml_is_fake else (1.0 - prob)
+        web_results = search_web_verification(text)
         
-    if final_real_prob > 0.5:
-        final_label = "REAL"
-        final_prob = final_real_prob
-        final_is_fake = False
-    else:
-        final_label = "FAKE"
-        final_prob = 1.0 - final_real_prob
-        final_is_fake = True
+        web_score = 0.5
+        web_explanation = ""
         
-    # Generate Advanced feature explanations based on original ML thought
-    explanation, suspicious_words = generate_explanation_and_highlights(text, vectorizer, model, le, ml_is_fake)
-    
-    # Merge Explanations
-    explanation = f"<strong>🤖 ML Linguistic Filter:</strong> {explanation} <br><br><strong>🌐 Live Web Ensemble:</strong> {web_explanation}"
-    
-    # Update local variables for DB and JSON return
-    label = final_label
-    prob = final_prob
-    is_fake = final_is_fake
+        if web_results is not None:
+            if len(web_results) > 0:
+                valid_sources = 0
+                avg_credibility = 0
+                for res in web_results:
+                    score, _ = get_credibility_score(res['href'])
+                    avg_credibility += score
+                    valid_sources += 1
+                    
+                if valid_sources > 0:
+                    avg_cred = avg_credibility / valid_sources
+                    if avg_cred >= 7.0:
+                        web_score = 0.95
+                        web_explanation = "We verified this claim against live data. It is currently being actively reported by highly credible journalistic sources."
+                    elif avg_cred >= 5.0:
+                        web_score = 0.75
+                        web_explanation = "We verified this claim online. It is currently being mentioned by various sources across the web."
+                    else:
+                        web_score = 0.35
+                        web_explanation = "While we found articles discussing this, they originated from historically unreliable or heavily biased sources, reducing credibility."
+            else:
+                web_score = 0.15
+                web_explanation = "A live scan of the internet yielded zero results for this claim from any recognizable publisher, heavily increasing the likelihood that it is entirely fabricated."
+                
+            final_real_prob = (ml_real_prob * 0.60) + (web_score * 0.40)
+        else:
+            final_real_prob = ml_real_prob
+            web_explanation = "Due to network conditions, live web verification was unavailable. This prediction relies entirely on linguistics."
+            web_results = []
+            
+        if final_real_prob > 0.5:
+            final_label = "REAL"
+            final_prob = final_real_prob
+            final_is_fake = False
+        else:
+            final_label = "FAKE"
+            final_prob = 1.0 - final_real_prob
+            final_is_fake = True
+            
+        explanation_txt, suspicious_words = generate_explanation_and_highlights(text, vectorizer, model, le, ml_is_fake)
+        bert_flag = bert_predictor.is_available()
+        ml_label  = "🤖 BERT Semantic Analysis" if bert_flag else "🤖 TF-IDF Linguistic Filter"
+        explanation = f"<strong>{ml_label}:</strong> {explanation_txt} <br><br><strong>🌐 Live Web Ensemble:</strong> {web_explanation}"
+        
+        label = final_label
+        prob = final_prob
+        is_fake = final_is_fake
     
     # If using pure text input without URL, attempts to guess the source from the DDGS top search result!
     if not url and web_results and not source_domain:
@@ -469,6 +587,8 @@ def dashboard():
         gender = request.form.get('gender')
         birthdate_str = request.form.get('birthdate')
         profile_picture = request.form.get('profile_picture')
+        region = request.form.get('region')
+        address = request.form.get('address')
         
         # Base64 Persistent Fast-Avatar Processor
         avatar_file = request.files.get('profile_picture_file')
@@ -492,6 +612,8 @@ def dashboard():
         current_user.city = city
         current_user.country = country
         current_user.gender = gender
+        current_user.region = region
+        current_user.address = address
         
         if birthdate_str:
             try:
@@ -511,7 +633,12 @@ def dashboard():
         return redirect(url_for('dashboard'))
         
     history = Prediction.query.filter_by(user_id=int(current_user.get_id())).order_by(Prediction.timestamp.desc()).limit(200).all()
-    return render_template('dashboard.html', history=history)
+    
+    local_news = []
+    if current_user.region:
+        local_news = Prediction.query.filter_by(is_public=True, region=current_user.region).order_by(Prediction.timestamp.desc()).limit(50).all()
+        
+    return render_template('dashboard.html', history=history, local_news=local_news)
 
 
 @app.route('/settings/theme', methods=['POST'])
@@ -571,10 +698,41 @@ def publish_prediction(pid):
         return redirect(url_for('dashboard'))
         
     p.is_public = True
+    p.region = current_user.region
     db.session.commit()
     flash('Successfully published your verification to the global Community Feed!', 'success')
     return redirect(url_for('dashboard'))
 
+@app.route('/prediction/<int:pid>/proofs', methods=['GET', 'POST'])
+@login_required
+def prediction_proofs(pid):
+    p = Prediction.query.get_or_404(pid)
+    
+    # Must be public or owned by user to view/add proofs
+    if not p.is_public and p.user_id != int(current_user.get_id()):
+        flash('This prediction is private.', 'danger')
+        return redirect(url_for('dashboard'))
+        
+    if request.method == 'POST':
+        content = request.form.get('content')
+        proof_link = request.form.get('proof_link')
+        if not content:
+            flash('Proof text is required.', 'danger')
+        else:
+            new_proof = Proof(
+                prediction_id=p.id,
+                user_id=int(current_user.get_id()),
+                content=content,
+                proof_link=proof_link
+            )
+            db.session.add(new_proof)
+            db.session.commit()
+            flash('Proof added successfully!', 'success')
+            return redirect(url_for('prediction_proofs', pid=p.id))
+            
+    # proofs relationship returns dynamic query, so call .all()
+    proofs = p.proofs.order_by(Proof.timestamp.desc()).all()
+    return render_template('proofs.html', prediction=p, proofs=proofs)
 
 @app.route('/prediction/delete/<int:pid>', methods=['POST'])
 @login_required

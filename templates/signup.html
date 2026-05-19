@@ -1,203 +1,113 @@
 {% extends 'base.html' %}
-
-{% block title %}Sign Up — AI News Verifier{% endblock %}
-
-{% block head %}
-<style>
-  .auth-shell {
-    min-height: calc(100vh - 64px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 48px 16px;
-    background:
-      radial-gradient(ellipse at 10% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
-      radial-gradient(ellipse at 90% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
-      var(--bg-main);
-  }
-
-  .auth-card {
-    width: 100%;
-    max-width: 460px;
-    background: var(--glass-bg);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
-    padding: 44px 40px;
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-  }
-
-  .auth-icon {
-    width: 52px;
-    height: 52px;
-    background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(16, 185, 129, 0.2));
-    border: 1px solid rgba(14, 165, 233, 0.3);
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    margin-bottom: 20px;
-    color: #2dd4bf;
-  }
-
-  .auth-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 6px;
-    letter-spacing: -0.03em;
-  }
-
-  .auth-subtitle {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 32px;
-  }
-
-  .auth-label {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  .auth-input {
-    width: 100%;
-    background: var(--bg-card);
-    border: 1px solid var(--border-light);
-    border-radius: 10px;
-    color: var(--text-primary);
-    padding: 12px 16px;
-    font-size: 0.95rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    outline: none;
-  }
-
-  .auth-input::placeholder {
-    color: #475569;
-  }
-
-  .auth-input:focus {
-    border-color: rgba(45, 212, 191, 0.5);
-    box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.1);
-  }
-
-  .auth-btn {
-    width: 100%;
-    padding: 13px;
-    background: linear-gradient(135deg, #0ea5e9, #10b981);
-    border: none;
-    border-radius: 10px;
-    color: #fff;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.15s;
-    margin-top: 8px;
-    letter-spacing: 0.01em;
-  }
-
-  .auth-btn:hover {
-    opacity: 0.88;
-    transform: translateY(-1px);
-  }
-
-  .auth-divider {
-    border: none;
-    border-top: 1px solid var(--border-light);
-    margin: 24px 0;
-  }
-
-  .auth-footer-text {
-    text-align: center;
-    font-size: 0.875rem;
-    color: var(--text-muted);
-  }
-
-  .auth-footer-text a {
-    color: #2dd4bf;
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  .auth-footer-text a:hover {
-    text-decoration: underline;
-  }
-
-  .input-group-dark {
-    margin-bottom: 18px;
-  }
-
-  .trust-badges {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-  }
-
-  .trust-badge {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .trust-badge i {
-    color: #22c55e;
-  }
-</style>
-{% endblock %}
+{% block title %}Sign Up — AI NewsVerifier{% endblock %}
 
 {% block content %}
 <div class="auth-shell">
-  <div class="auth-card">
-    <div class="auth-icon"><i class="bi bi-person-plus-fill"></i></div>
-    <div class="auth-title">Create your account</div>
-    <div class="auth-subtitle">Start verifying news with AI in seconds.</div>
 
-    <div class="trust-badges">
-      <span class="trust-badge"><i class="bi bi-check-circle-fill"></i> Free forever</span>
-      <span class="trust-badge"><i class="bi bi-shield-fill-check"></i> Secure & private</span>
-      <span class="trust-badge"><i class="bi bi-clock-history"></i> Save history</span>
-    </div>
+  <!-- ── LEFT DECORATIVE PANEL ── -->
+  <div class="auth-deco">
+    <!-- The background image handles the visual here now -->
+  </div>
 
-    <form method="post" action="/signup" autocomplete="on">
-      <div class="input-group-dark">
-        <label class="auth-label" for="signup-username">Username</label>
-        <input id="signup-username" name="username" class="auth-input" placeholder="johndoe" required
-          autocomplete="username" />
-      </div>
-      <div class="input-group-dark">
-        <label class="auth-label" for="signup-email">Email address</label>
-        <input id="signup-email" name="email" type="email" class="auth-input" placeholder="you@example.com" required
-          autocomplete="email" />
-      </div>
-      <div class="input-group-dark">
-        <label class="auth-label" for="signup-password">Password</label>
-        <input id="signup-password" name="password" type="password" class="auth-input"
-          placeholder="Create a strong password" required autocomplete="new-password" />
-      </div>
-      <div class="input-group-dark">
-        <label class="auth-label" for="signup-confirm-password">Confirm Password</label>
-        <input id="signup-confirm-password" name="confirm_password" type="password" class="auth-input"
-          placeholder="Repeat your password" required autocomplete="new-password" />
-      </div>
-      <button type="submit" class="auth-btn">
-        <i class="bi bi-person-check me-1"></i> Create Account
-      </button>
-    </form>
+  <!-- ── RIGHT FORM PANEL ── -->
+  <div class="auth-form-side">
+    <div class="auth-form-inner">
 
-    <hr class="auth-divider" />
-    <div class="auth-footer-text">
-      Already have an account? <a href="/login">Sign in instead</a>
+      <div class="auth-form-heading">Create your account</div>
+      <div class="auth-form-sub">Join thousands of readers fighting misinformation.</div>
+
+      <form method="post" action="/signup" autocomplete="on">
+
+        <div class="auth-field">
+          <label class="auth-label" for="signup-username">Username</label>
+          <div class="auth-input-wrap">
+            <i class="bi bi-person auth-input-icon"></i>
+            <input id="signup-username" name="username" class="auth-input" placeholder="Username" required autocomplete="username" />
+          </div>
+        </div>
+
+        <div class="auth-field">
+          <label class="auth-label" for="signup-email">Email address</label>
+          <div class="auth-input-wrap">
+            <i class="bi bi-envelope auth-input-icon"></i>
+            <input id="signup-email" name="email" type="email" class="auth-input" placeholder="Email Address" required autocomplete="email" />
+          </div>
+        </div>
+
+        <div class="auth-field">
+          <label class="auth-label" for="signup-password">Password</label>
+          <div class="auth-input-wrap">
+            <i class="bi bi-lock auth-input-icon"></i>
+            <input id="signup-password" name="password" type="password" class="auth-input" placeholder="Create a strong password" required autocomplete="new-password" oninput="checkPwStrength(this.value)" />
+          </div>
+          <!-- Password strength bar -->
+          <div style="margin-top:8px;height:4px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;">
+            <div id="pw-strength-bar" style="height:100%;width:0%;border-radius:99px;background:#ef4444;transition:width 0.4s,background 0.4s;"></div>
+          </div>
+          <div id="pw-strength-text" style="font-size:0.75rem;color:#64748b;margin-top:6px;"></div>
+        </div>
+
+        <div class="auth-field">
+          <label class="auth-label" for="signup-confirm-password">Confirm Password</label>
+          <div class="auth-input-wrap">
+            <i class="bi bi-lock-fill auth-input-icon"></i>
+            <input id="signup-confirm-password" name="confirm_password" type="password" class="auth-input" placeholder="Repeat your password" required autocomplete="new-password" />
+          </div>
+        </div>
+
+        <button type="submit" class="auth-btn">
+          Create Account
+        </button>
+      </form>
+
+      <hr class="auth-divider" />
+      
+      <div class="social-buttons">
+        <button type="button" class="social-btn social-btn-google">
+          <i class="bi bi-google"></i> Google
+        </button>
+        <button type="button" class="social-btn social-btn-facebook">
+          <i class="bi bi-facebook"></i> Facebook
+        </button>
+      </div>
+
+      <div class="auth-footer-text">
+        Already have an account? <a href="/login">Sign in instead &rarr;</a>
+      </div>
+
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block head %}
+<style>
+  .auth-shell { min-height: calc(100vh - 68px); }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function checkPwStrength(val) {
+    const bar  = document.getElementById('pw-strength-bar');
+    const text = document.getElementById('pw-strength-text');
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    const levels = [
+      { pct: '15%', color: '#ef4444', label: 'Too weak' },
+      { pct: '35%', color: '#f97316', label: 'Weak' },
+      { pct: '65%', color: '#eab308', label: 'Fair' },
+      { pct: '85%', color: '#22c55e', label: 'Strong' },
+      { pct: '100%',color: '#10b981', label: 'Very strong' },
+    ];
+    const lvl = val.length === 0 ? { pct:'0%',color:'#ef4444',label:'' } : levels[score] || levels[0];
+    bar.style.width  = lvl.pct;
+    bar.style.background = lvl.color;
+    text.textContent = lvl.label;
+    text.style.color = lvl.color;
+  }
+</script>
 {% endblock %}
