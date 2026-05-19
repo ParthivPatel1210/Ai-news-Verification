@@ -146,5 +146,8 @@ def predict(text: str) -> tuple[str, float]:
 
 
 def is_available() -> bool:
+    import os
+    if os.environ.get('RENDER'):
+        return False
     """Always True — model downloads automatically from HF on first call."""
     return True   # sentence-transformers handles auto-download
