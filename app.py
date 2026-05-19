@@ -299,8 +299,7 @@ def generate_explanation_and_highlights(text, vectorizer, model, le, is_fake):
     return reason, ','.join(suspicious_features)
 
 
-@app.route('/predict', methods=['POST'])
-def predict():
+def predict_inner():
     global model, vectorizer, le
     data = request.get_json() or request.form
     text = data.get('text', '').strip()
@@ -885,5 +884,12 @@ def _fetch_google_rss(url, limit=10):
         return jsonify({'status': 'error', 'message': 'Failed to fetch news'}), 500
 
 
+@app.route('/predict', methods=['POST'])
+def predict():
+    import traceback
+    try:
+        return predict_inner()
+    except Exception as e:
+        return jsonify({'error': f"Internal Server Error: {str(e)}", 'traceback': traceback.format_exc()}), 500
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
